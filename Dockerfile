@@ -1,7 +1,7 @@
 FROM cloudgear/ruby:2.2
 MAINTAINER Roberto Jimenez Sanchez, IBM Germany <roberto@de.ibm.com>
 
-RUN apt-get update && apt-get install wget apt-utils unzip jq git curl vim nano -y
+RUN apt-get update && apt-get install wget apt-utils unzip jq git curl vim nano golang -y
 RUN gem install bosh_cli
 RUN wget https://github.com/cloudfoundry-incubator/spiff/releases/download/v1.0.7/spiff_linux_amd64.zip && unzip -d /usr/local/bin/ spiff_linux_amd64.zip && rm spiff_linux_amd64.zip 
 
@@ -23,15 +23,20 @@ RUN mkdir -p /var/lib/consul && mkdir -p /usr/share/consul && mkdir -p /etc/cons
 RUN curl -O -J -L https://dl.bintray.com/mitchellh/consul/0.5.2_linux_amd64.zip && unzip 0.5.2_linux_amd64.zip && mv consul /usr/local/bin/consul
 RUN curl -O -J -L https://dl.bintray.com/mitchellh/consul/0.5.2_web_ui.zip && unzip 0.5.2_web_ui.zip && mv dist /usr/share/consul/ui
 
+
 RUN git clone https://github.com/cloudfoundry/cf-release.git /resources/
 RUN git clone https://github.com/cloudfoundry-incubator/diego-release.git /resources/
 
-RUN cd /resources/cf-release &&  ./update
-RUN cd /resources/diego-release && ./scripts/update
+#RUN cd /resources/cf-release &&  ./update
+#RUN cd /resources/diego-release && ./scripts/update
 
 # Install CATs 
+
+RUN go get github.com/cloudfoundry/cf-acceptance-tests ...
 	
 # Install DATs
+
+RUN go get -t -v github.com/cloudfoundry-incubator/diego-acceptance-tests/...
 
 # Inigo and others tests...
 
