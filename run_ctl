@@ -1,0 +1,17 @@
+#!/bin/bash
+if [ -f $ENV_CONFIG ]; then
+    source $ENV_CONFIG
+fi
+
+# Updates cf-release
+pushd /resources/cf-release
+git pull
+./update
+popd
+
+pushd /resources/diego-release
+git pull
+./scripts/update
+popd
+
+/bin/bash
