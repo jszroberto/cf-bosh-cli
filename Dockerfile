@@ -25,12 +25,12 @@ RUN curl -O -J -L https://dl.bintray.com/mitchellh/consul/0.5.2_web_ui.zip && un
 
 RUN git clone https://github.com/cloudfoundry/cf-release.git /resources/
 RUN git clone https://github.com/cloudfoundry-incubator/diego-release.git /resources/
-RUN git config --global user.email "roberto@de.ibm.com" && git config --global user.name "Roberto Jimenez Sanchez" && git config --global credential.helper cache
-RUN cd cf-release &&  ./update
-RUN cd ../diego-release && ./scripts/update
+
+RUN cd /resources/cf-release &&  ./update
+RUN cd /resources/diego-release && ./scripts/update
 
 # Install CATs 
-
+	
 # Install DATs
 
 # Inigo and others tests...
