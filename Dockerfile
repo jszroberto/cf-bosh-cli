@@ -16,7 +16,7 @@ WORKDIR /workspace
 RUN apt-get update && apt-get install golang -y
 ENV GOROOT /usr/lib/go
 ENV GOBIN /usr/bin/go
-ENV GOPATH ~/go
+ENV GOPATH /resources/go 
 RUN echo 'export PATH=$PATH:$GOROOT/bin:$GOPATH/bin' >> ~/.bashrc
 
 # Installation of CF CLI and Spiff
