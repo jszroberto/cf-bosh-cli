@@ -1,6 +1,5 @@
-FROM totemteko/diego-cli:latest
-MAINTAINER Roberto Jimenez Sanchez, IBM Germany <roberto@de.ibm.com>
-
+FROM jszroberto/diego-cli:latest
+MAINTAINER Roberto Jimenez Sanchez, <jszroberto@gmail.com>
 
 # Installation of GO
 

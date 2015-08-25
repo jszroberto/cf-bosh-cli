@@ -1,6 +1,8 @@
 FROM ubuntu:latest
 
-MAINTAINER Roberto Jimenez Sanchez, IBM Germany <roberto@de.ibm.com>
+MAINTAINER Roberto Jimenez Sanchez, <jszroberto@gmail.com>
+
+RUN apt-get update && apt-get install wget apt-utils unzip jq git curl vim nano -y
 
 # Installation of latest Ruby 
 
@@ -9,7 +11,7 @@ RUN rvm install ruby --latest
 
 # Installation of Bosh CLI
 
-RUN apt-get update && apt-get install wget apt-utils unzip jq git curl vim nano -y
+
 RUN gem install bosh_cli
 
 ENV ENV_CONFIG /workspace/env.conf
