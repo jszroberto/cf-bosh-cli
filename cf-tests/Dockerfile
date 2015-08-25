@@ -1,4 +1,4 @@
-FROM totemteko/cf-bosh-cli:cf
+FROM jszroberto/cf-cli:latest
 MAINTAINER Roberto Jimenez Sanchez, IBM Germany <roberto@de.ibm.com>
 
 
