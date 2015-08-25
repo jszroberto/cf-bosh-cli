@@ -1,5 +1,11 @@
-FROM cloudgear/ruby:2.2
+FROM ubuntu:latest
+
 MAINTAINER Roberto Jimenez Sanchez, IBM Germany <roberto@de.ibm.com>
+
+# Installation of latest Ruby 
+
+RUN \curl -L https://get.rvm.io | bash -s stable --ruby
+RUN rvm install ruby --latest
 
 # Installation of Bosh CLI
 
