@@ -15,13 +15,13 @@ RUN /usr/local/rvm/bin/rvm requirements
 
 # Install ruby
 RUN echo "gem: --no-rdoc --no-ri" >> ~/.gemrc
-RUN /usr/local/rvm/bin/rvm install ruby --latest
-
+#RUN /usr/local/rvm/bin/rvm install ruby --latest
+RUN /usr/local/rvm/bin/rvm install ruby install ruby 2.1.6
 
 # Installation of Bosh CLI
 
 
-RUN gem install bosh_cli
+RUN gem install bosh_cli bosh_cli_plugin_micro --no-ri --no-rdoc
 
 ENV ENV_CONFIG /workspace/env.conf
 VOLUME /workspace
