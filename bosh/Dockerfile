@@ -19,9 +19,9 @@ RUN echo "gem: --no-rdoc --no-ri" >> ~/.gemrc
 RUN /usr/local/rvm/bin/rvm install ruby install ruby 2.1.6
 
 # Installation of Bosh CLI
-RUN source /etc/profile.d/rvm.sh
-RUN /usr/local/rvm/rubies/ruby-2.1.6/bin/gem install bosh_cli bosh_cli_plugin_micro --no-ri --no-rdoc
 
+RUN /bin/bash -l -c "gem install bundler --no-ri --no-rdoc"
+RUN RUN /bin/bash -l -c "gem install bosh_cli bosh_cli_plugin_micro --no-ri --no-rdoc"
 ENV ENV_CONFIG /workspace/env.conf
 VOLUME /workspace
 VOLUME /resources
