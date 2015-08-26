@@ -24,5 +24,4 @@ RUN /bin/bash -l -c "gem install bundler --no-ri --no-rdoc"
 RUN /bin/bash -l -c "gem install bosh_cli bosh_cli_plugin_micro --no-ri --no-rdoc"
 ENV ENV_CONFIG /workspace/env.conf
 VOLUME /workspace
-VOLUME /resources
 WORKDIR /workspace
