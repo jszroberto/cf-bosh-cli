@@ -1,4 +1,4 @@
-FROM bosh-cli
+FROM jszroberto/bosh-cli
 MAINTAINER Roberto Jimenez Sanchez, <jszroberto@gmail.com>
 # Installation of Bosh CLI
 
