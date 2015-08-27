@@ -18,6 +18,7 @@ RUN echo "gem: --no-rdoc --no-ri" >> ~/.gemrc
 #RUN /usr/local/rvm/bin/rvm install ruby --latest
 RUN /usr/local/rvm/bin/rvm install ruby install ruby 2.1.6
 
+
 # Installation of Bosh CLI
 
 RUN /bin/bash -l -c "gem install bundler --no-ri --no-rdoc"
@@ -25,3 +26,14 @@ RUN /bin/bash -l -c "gem install bosh_cli bosh_cli_plugin_micro --no-ri --no-rdo
 ENV ENV_CONFIG /workspace/env.conf
 VOLUME /workspace
 WORKDIR /workspace
+
+RUN mkdir /root/bin 
+RUN echo 'export PATH=$PATH:/root/bin' >> ~/.bashrc
+RUN echo 'export PATH=$PATH:/root/bin' >> /etc/profile
+
+ADD load_env /root/bin/
+RUN chmod +x /root/bin/load_env
+
+ADD login_bosh /root/bin/
+RUN chmod +x /root/bin/login_bosh
+CMD bash -l -c "load_env login_bosh"
