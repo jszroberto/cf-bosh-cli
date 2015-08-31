@@ -15,24 +15,23 @@ A container to work with CF and Bosh CLIs. It is a already configured container 
 
 To run the tests againts a bosh lite installation with the default configuration: 
 
-'''
+```
 $ docker run -i -t jszroberto/cats 
 
-'''
+```
 
 To run the tests using a personalized configuration: 
 
-''' 
+```
 $ docker run -i -t -v $(pwd):/workspace -e "CONFIG=/workspace/integration_config.yml" jszroberto/cats 
 
-''' 
+```
 
 This will run the latest version of the tests against your environment. In case you want a specific versions of the tests, just set up the following environmental variable: 
 
-'''
+```
 -e "COMMIT=f98149cdsjfl9814198149"
-
-'''
+```
 
 Alternatively, you can have a file named "env.conf" in the mounted volume which would be loaded when the container is launched. 
 
@@ -41,25 +40,25 @@ Alternatively, you can have a file named "env.conf" in the mounted volume which 
 
 To run the tests againts a bosh lite installation with the default configuration: 
 
-''' 
+```
 $ docker run -i -t jszroberto/dats 
 
-'''
+```
 
 To run the tests using a personalized configuration or for other external environments: 
 
-''' 
+```
 $ docker run -i -t -v $(pwd):/workspace -e "CONFIG=/workspace/integration_config.yml" jszroberto/dats 
 
-''' 
+``` 
 
 
 This will run the latest version of the tests against your environment. In case you want a specific versions of the tests, just set up the following environmental variable: 
 
-'''
+```
 -e "COMMIT=f98149cdsjfl9814198149"
 
-'''
+```
 
 Alternatively, you can have a file named "env.conf" in the mounted volume which would be loaded when the container is launched. 
 
