@@ -29,7 +29,7 @@ then
   "admin_password": "admin",
   "apps_domain": "10.244.0.34.xip.io",
   "skip_ssl_validation": true,
-  "use_http": true
+  "secure_address": "10.244.0.42:4001"
 }
 EOF
 
