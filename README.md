@@ -4,26 +4,23 @@ A container to work with CF and Bosh CLIs. It is a already configured container 
 
 ## Instructions to run Bosh CLI image
 
-
 ## Instructions to run CF CLI Image 
 
 ## Instructions to run Diego CLI Image
 
-
 ## Instructions to run CATs
-
 
 To run the tests againts a bosh lite installation with the default configuration: 
 
 ```
-$ docker run -i -t jszroberto/cats 
+$ docker run -i -t diegoteam/cats 
 
 ```
 
 To run the tests using a personalized configuration: 
 
 ```
-$ docker run -i -t -v $(pwd):/workspace -e "CONFIG=/workspace/integration_config.yml" jszroberto/cats 
+$ docker run -i -t -v $(pwd):/workspace -e "CONFIG=/workspace/integration_config.yml" diegoteam/cats 
 
 ```
 
@@ -41,14 +38,14 @@ Alternatively, you can have a file named "env.conf" in the mounted volume which 
 To run the tests againts a bosh lite installation with the default configuration: 
 
 ```
-$ docker run -i -t jszroberto/dats 
+$ docker run -i -t diegoteam/dats 
 
 ```
 
 To run the tests using a personalized configuration or for other external environments: 
 
 ```
-$ docker run -i -t -v $(pwd):/workspace -e "CONFIG=/workspace/integration_config.yml" jszroberto/dats 
+$ docker run -i -t -v $(pwd):/workspace -e "CONFIG=/workspace/integration_config.yml" diegoteam/dats 
 
 ``` 
 
