@@ -15,5 +15,5 @@ else
 	fi 
 	echo -e "$BOSH_USER\n$BOSH_PWD\n" | bosh target $BOSH_DIRECTOR
 	# bosh login $BOSH_USER $BOSH_PWD
-fi  
-
+fi 
+$*

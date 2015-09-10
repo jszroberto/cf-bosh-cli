@@ -30,6 +30,7 @@ then
   "skip_ssl_validation": true,
   "use_http": true
 }
+
 EOF
 
 fi

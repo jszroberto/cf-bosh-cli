@@ -36,4 +36,4 @@ RUN chmod +x /root/bin/load_env
 
 ADD login_bosh /root/bin/
 RUN chmod +x /root/bin/login_bosh
-CMD bash -l -c "load_env login_bosh"
+ENTRYPOINT bash -l -c "load_env login_bosh"

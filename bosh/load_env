@@ -6,6 +6,4 @@ if [[ -f "/workspace/env.conf" ]]
 then 
 	source "/workspace/env.conf"
 fi
-echo $*
 $*
-bash 

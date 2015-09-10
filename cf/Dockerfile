@@ -27,4 +27,4 @@ RUN git clone https://github.com/cloudfoundry/cf-release.git /root/cf-release
 ADD login_cf /root/bin/
 RUN chmod +x /root/bin/login_cf
 
-CMD bash -l -c "load_env"
+ENTRYPOINT bash -l -c "load_env"
