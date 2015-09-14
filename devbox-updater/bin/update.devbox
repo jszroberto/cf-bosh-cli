@@ -1,0 +1,147 @@
+#!/bin/bash
+
+set -x
+set -e 
+set -o pipefail
+
+#
+#
+# Main block
+#
+#
+usage()
+{
+cat << EOF
+usage: $0 options
+
+Updates a Bosh-lite devbox with the latest CF major version and compatible Diego
+
+OPTIONS:
+   --cfdir      Location of the CF repository
+   --diegodir   Location of the Diego repository
+   --gardendir  Location of the Garden-Linux repository
+   -h --help    Show the usage
+EOF
+}
+
+
+#
+# Parameter processing
+#
+async=0
+time=0
+user=""
+while [[ $# > 0 ]]
+do
+key="$1"
+shift
+case $key in
+    --cfdir)
+    CFDIR=$1
+    shift
+    ;;
+    --diegodir)
+    DIEGODIR=$1
+    shift
+    ;;
+    --gardendir)
+    GARDENDIR=$1
+    shift
+    ;;
+    -h|--help)
+    usage
+    exit 1
+    ;;
+    *)
+    args="$key $*"
+    break
+    ;;
+esac
+done
+
+
+if [[ "$CFDIR" == "" ]] || [[ "$DIEGODIR" == "" ]] || [[ "$GARDENDIR" == "" ]]; then
+    usage
+    exit 1
+fi
+
+
+check_if_release(){
+	if [[ "$(bosh releases | grep $1)" == "" ]]
+	then 
+		return 0
+	else
+		return 1
+	fi 
+}
+
+get_commit_hash(){
+	release_yml=releases/$2
+	
+	if [[ -e "$1/$release_yml" ]]
+	then
+		pushd $1 &>/dev/null
+		echo $(cat $release_yml | grep "commit_hash:" | sed "s/ //g" |  sed "s/'//g" | cut -d ':' -f 2 )
+		popd &>/dev/null
+	else
+		echo "ERROR: Release not found at $1/$release_yml"
+		exit 1
+	fi
+	
+}
+
+upload_release(){
+
+	if [[ ! $(check_if_release $(get_commit_hash  $1 $2)) ]]
+	then
+		pushd $1 &>/dev/null
+		bosh upload release releases/$2
+		popd &>/dev/null
+	else
+		echo "INFO: Release already found in Bosh director"
+	fi
+	
+}
+
+# Login bosh
+
+login.bosh
+
+# Update repositories
+
+update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR
+
+# Get releases version
+
+cf_version=$(get.latest.major.release $CFDIR)
+row=$(get.cf.compatible.versions $cf_version)
+diego_version=$(echo $row | cut -d "," -f2)
+garden_linux_version=$(echo $row | cut -d "," -f3)
+
+# Upload releases
+
+upload_release $CFDIR "cf-${cf_version}.yml"
+upload_release $DIEGODIR "diego-${diego_version}.yml"
+upload_release $GARDENDIR "garden-linux/garden-linux-${garden_linux_version}.yml"
+
+# Cloud-Check
+
+bosh cloudcheck 
+
+# Generate manifests
+
+mkdir -p manifests
+generate.devbox.manifests -d $diego_version -c $cf_version -o manifests --cfdir $CFDIR --diegodir $DIEGODIR --lite 
+
+# Deploy manifests
+
+bosh -d manifests/cf.yml deploy
+bosh cloudcheck 
+
+bosh -d manifests/diego.yml deploy
+bosh cloudcheck
+
+# Cleanup releases
+
+bosh cleanup --all 
+

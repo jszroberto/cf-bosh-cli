@@ -1,0 +1,47 @@
+#!/bin/bash
+
+
+usage()
+{
+cat << EOF
+usage: $0 REPOSITORY [COMMIT]
+
+This scrips gives you the lastest major version of a Bosh Release
+
+EOF
+}
+
+get_latest_release(){
+	pushd $repository &>/dev/null
+	if [[ "$commit" != "" ]]
+	then
+		git checkout $commit &>/dev/null
+ 	fi
+	latest_release=$(ls releases/ | grep  yml | grep cf | sort -r | head -n 1)
+	version=$(cat releases/$latest_release | tail -n 1 | sed "s/ //g" |  sed "s/'//g" | cut -d ':' -f 2 )
+	popd &>/dev/null
+}
+
+if [[ $# < 1 ]]
+then 
+	usage
+	exit 1
+fi
+
+if [[ -n "$1" ]]
+then
+	repository=$1
+fi
+
+if [[ -n "$2" ]]
+then
+	commit=$2
+fi 
+
+if [[ ! -n "$repository" ]]; then
+	usage
+	exit 1
+fi 
+
+get_latest_release
+echo $version

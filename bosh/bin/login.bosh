@@ -1,0 +1,75 @@
+#! /bin/bash
+
+#
+#
+# Main block
+#
+#
+usage()
+{
+cat << EOF
+usage: $0 options
+
+Log into a bosh director. By default, it will log into a bosh lite installation running on the host machine. 
+
+OPTIONS:
+   -u   Bosh admin user
+   -p   Admin password
+   -d   Director location
+   -h --help    Show the usage
+EOF
+}
+
+
+#
+# Parameter processing
+#
+async=0
+time=0
+user=""
+while [[ $# > 0 ]]
+do
+key="$1"
+shift
+case $key in
+    -u)
+    BOSH_USER=$1
+    shift
+    ;;
+    -p)
+    BOSH_PWD=$1
+    shift
+    ;;
+    -d)
+    BOSH_DIRECTOR=$1
+    shift
+    ;;
+    -h|--help)
+    usage
+    exit 1
+    ;;
+    *)
+    args="$key $*"
+    break
+    ;;
+esac
+done
+
+
+if [[ -z "$BOSH_DIRECTOR" ]]
+then
+	echo 'INFO: Not Bosh director address found in variable BOSH_DIRECTOR.'
+	echo 'Trying with a default bosh_lite installation...'
+	echo -e "admin\nadmin\n" | bosh target 192.168.50.4 lite
+	# bosh login admin admin 
+else
+	if [[ -z $BOSH_USER ]] || [[ -z $BOSH_USER ]]
+	then 
+		echo 'ERROR: Bosh credentials not found.'
+		echo 'Please set up variables $BOSH_USER and $BOSH_PWD'
+		exit 1
+	fi 
+	echo -e "$BOSH_USER\n$BOSH_PWD\n" | bosh target $BOSH_DIRECTOR
+	# bosh login $BOSH_USER $BOSH_PWD
+fi 
+$*

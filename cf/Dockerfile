@@ -23,8 +23,8 @@ RUN echo 'export PATH=$PATH:$GOROOT/bin:$GOPATH/bin' >> ~/.bashrc
 
 RUN git clone https://github.com/cloudfoundry/cf-release.git /root/cf-release
 
+ADD bin/* /root/bin/
+RUN chmod +x /root/bin/*
 
-ADD login_cf /root/bin/
-RUN chmod +x /root/bin/login_cf
-
-ENTRYPOINT bash -l -c "load_env"
+ENTRYPOINT bash -l -c "load.env"
+CMD "bash"

@@ -31,9 +31,8 @@ RUN mkdir /root/bin
 RUN echo 'export PATH=$PATH:/root/bin' >> ~/.bashrc
 RUN echo 'export PATH=$PATH:/root/bin' >> /etc/profile
 
-ADD load_env /root/bin/
-RUN chmod +x /root/bin/load_env
+ADD bin/* /root/bin/
+RUN chmod +x /root/bin/*
 
-ADD login_bosh /root/bin/
-RUN chmod +x /root/bin/login_bosh
-ENTRYPOINT bash -l -c "load_env login_bosh"
+ENTRYPOINT bash -l -c "load_env login.bosh"
+CMD "bash"
