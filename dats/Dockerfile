@@ -1,4 +1,7 @@
-FROM diegoteam/diego-cli:latest
+#FROM diegoteam/diego-cli:latest
+
+FROM diego-cli:latest
+
 MAINTAINER Roberto Jimenez Sanchez, <jszroberto@gmail.com>
 
 RUN /bin/bash -l -c "go get -t -v github.com/cloudfoundry-incubator/diego-acceptance-tests/..."

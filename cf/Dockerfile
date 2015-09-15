@@ -28,5 +28,4 @@ RUN git clone https://github.com/cloudfoundry/cf-release.git /root/cf-release
 ADD bin/* /root/bin/
 RUN chmod +x /root/bin/*
 
-ENTRYPOINT bash -l -c "load.env"
-CMD "bash"
+CMD bash -l -c "load.env"

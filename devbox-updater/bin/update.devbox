@@ -65,6 +65,14 @@ if [[ "$CFDIR" == "" ]] || [[ "$DIEGODIR" == "" ]] || [[ "$GARDENDIR" == "" ]]; 
     exit 1
 fi
 
+check_if_stemcell(){
+	if [[ "$(bosh releases | grep $1)" == "" ]]
+	then 
+		return 0
+	else
+		return 1
+	fi 
+}
 
 check_if_release(){
 	if [[ "$(bosh releases | grep $1)" == "" ]]
@@ -124,7 +132,15 @@ upload_release $CFDIR "cf-${cf_version}.yml"
 upload_release $DIEGODIR "diego-${diego_version}.yml"
 upload_release $GARDENDIR "garden-linux/garden-linux-${garden_linux_version}.yml"
 
-# Cloud-Check
+# Check if stemcell is there. 
+
+stemcell=bosh-warden-boshlite-ubuntu-trusty-go_agent
+if [[ ! check_if_stemcell $stemcell ]]
+then
+	curl -L -J -O https://bosh.io/d/stemcells/$stemcell
+	bosh upload stemcell $stemcell
+fi 
+
 
 bosh cloudcheck 
 

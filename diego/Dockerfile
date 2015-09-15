@@ -1,4 +1,5 @@
 FROM diegoteam/cf-cli:latest
+
 MAINTAINER Roberto Jimenez Sanchez, <jszroberto@gmail.com>
 # Installation of Diego Beta Plugin
 
