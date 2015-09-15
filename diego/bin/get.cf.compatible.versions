@@ -1,21 +1,19 @@
 #!/bin/bash
 
-# detect_new_cf_major_release(){
-# 	get_latest_cf_release
-# 	oldversion=$cf_version
-# 	update_cf_release &>/dev/null
-# 	get_latest_cf_release
-# 	newversion=$cf_version
-# 	if [[ "$oldversion" == "$newversion" ]]
-# 	then 
-# 		trigger
-# 	fi
-# }
+usage()
+{
+cat << EOF
+usage: $0 VERSION
 
-# trigger(){
-# 	echo "New CF VERSION"
-# 	newrow=$(generate_table | grep $newversion | sort | head -n 1)
-# 	echo $newrow
-# }
+This gives you the compatible version of Diego, Garden linux, etc for a given CF version
+
+EOF
+}
+
+if [[ $# != 1 ]]
+then
+	usage
+	exit 1
+fi 
 
 echo "$(generate.compatibility.table | grep "^${1}" | sort | head -n 1)"

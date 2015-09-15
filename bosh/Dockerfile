@@ -35,4 +35,4 @@ ADD bin/* /root/bin/
 RUN chmod +x /root/bin/*
 
 ENTRYPOINT bash -l -c "load.env login.bosh"
-CMD "bash"
+CMD bash

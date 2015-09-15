@@ -55,13 +55,11 @@ case $key in
 esac
 done
 
-
 if [[ -z "$BOSH_DIRECTOR" ]]
 then
 	echo 'INFO: Not Bosh director address found in variable BOSH_DIRECTOR.'
 	echo 'Trying with a default bosh_lite installation...'
-	echo -e "admin\nadmin\n" | bosh target 192.168.50.4 lite
-	# bosh login admin admin 
+	bosh target 192.168.50.4 lite -u admin -p admin
 else
 	if [[ -z $BOSH_USER ]] || [[ -z $BOSH_USER ]]
 	then 
@@ -69,7 +67,7 @@ else
 		echo 'Please set up variables $BOSH_USER and $BOSH_PWD'
 		exit 1
 	fi 
-	echo -e "$BOSH_USER\n$BOSH_PWD\n" | bosh target $BOSH_DIRECTOR
-	# bosh login $BOSH_USER $BOSH_PWD
+	bosh target $BOSH_DIRECTOR -u $BOSH_USER -p $BOSH_PWD
+	
 fi 
 $*

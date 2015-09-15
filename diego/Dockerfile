@@ -6,6 +6,9 @@ RUN cf install-plugin Diego-Beta -r CF-Community
 
 # Downloading repositories
 
+ENV DIEGODIR /root/diego-release
+ENV GARDENDIR /root/garden-linux-release
+
 RUN git clone https://github.com/cloudfoundry-incubator/diego-release.git /root/diego-release
 RUN git clone https://github.com/cloudfoundry-incubator/garden-linux-release.git /root/garden-linux-release
 

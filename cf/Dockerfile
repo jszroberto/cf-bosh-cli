@@ -21,6 +21,8 @@ RUN echo 'export GOPATH=/root/go' >> ~/.bashrc
 
 RUN echo 'export PATH=$PATH:$GOROOT/bin:$GOPATH/bin' >> ~/.bashrc
 
+ENV CFDIR /root/cf-release
+
 RUN git clone https://github.com/cloudfoundry/cf-release.git /root/cf-release
 
 ADD bin/* /root/bin/
