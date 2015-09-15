@@ -130,7 +130,7 @@ if is_stemcell_missing $stemcell
 then
 	curl -L -J -O https://bosh.io/d/stemcells/$stemcell
 	bosh upload stemcell $stemcell
-fi 
+fi
 
 if [[ "$(bosh deployments)" == *"No deployments"* ]]
 then
@@ -145,11 +145,13 @@ generate.devbox.manifests -d $diego_version -c v$cf_version -o manifests --cfdir
 
 # Deploy manifests
 
-echo yes | bosh -d manifests/cf.yml deploy
-bosh -d manifests/cf.yml cloudcheck 
+bosh deployment manifests/cf.yml
+echo yes | bosh deploy
+bosh cloudcheck
 
-echo yes | bosh -d manifests/diego.yml deploy
-bosh -d manifests/diego.yml  cloudcheck
+bosh deployment manifests/diego.yml
+echo yes | bosh deploy
+bosh cloudcheck
 
 # Cleanup releases
 
