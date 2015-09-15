@@ -20,6 +20,8 @@ OPTIONS:
    --cfdir      Location of the CF repository
    --diegodir   Location of the Diego repository
    --gardendir  Location of the Garden-Linux repository
+   --no-upload  No realeses will be upload into director
+   --cleanup    Unused stemcells and release will be removed after update
    -h --help    Show the usage
 EOF
 }
@@ -47,6 +49,12 @@ case $key in
     --gardendir)
     GARDENDIR=$1
     shift
+    ;;
+    --no-upload)
+    NO_UPLOAD=1
+    ;;
+    --cleanup)
+    CLEANUP=1
     ;;
     -h|--help)
     usage
@@ -101,13 +109,19 @@ upload_release(){
 	
 }
 
+upload_cf_releases(){
+	upload_release $CFDIR "cf-${cf_version}.yml"
+	upload_release $DIEGODIR "diego-${diego_version}.yml"
+	upload_release $GARDENDIR "garden-linux/garden-linux-${garden_linux_version}.yml"
+}
+
 # Login bosh
 
 login.bosh
 
 # Update repositories
 
-update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR -f
+update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR
 
 # Get releases version
 
@@ -118,9 +132,10 @@ garden_linux_version=$(echo $row | cut -d "," -f3)
 
 # Upload releases
 
-upload_release $CFDIR "cf-${cf_version}.yml"
-upload_release $DIEGODIR "diego-${diego_version}.yml"
-upload_release $GARDENDIR "garden-linux/garden-linux-${garden_linux_version}.yml"
+if [[ ! $NO_UPLOAD ]]
+then
+	upload_cf_releases
+fi 
 
 # Check if stemcell is there. 
 
@@ -141,7 +156,12 @@ fi
 # Generate manifests
 
 mkdir -p manifests
-generate.devbox.manifests -d $diego_version -c v$cf_version -o manifests --cfdir $CFDIR --diegodir $DIEGODIR --lite 
+
+if [[ ! -f "manifests/cf.yml" ]] || [[ ! -f "manifests/diego.yml" ]]
+then
+	update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR -f
+	generate.devbox.manifests -d $diego_version -c v$cf_version -o manifests --cfdir $CFDIR --diegodir $DIEGODIR --lite 
+fi 
 
 # Deploy manifests
 
@@ -153,7 +173,9 @@ bosh deployment manifests/diego.yml
 echo yes | bosh deploy
 bosh cloudcheck
 
-# Cleanup releases
+# Cleanup releases and stemcells
 
-bosh cleanup --all 
-
+if [[ $CLEANUP ]]
+then 
+	bosh cleanup --all 
+fi 
