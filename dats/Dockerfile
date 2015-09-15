@@ -1,6 +1,4 @@
-#FROM diegoteam/diego-cli:latest
-
-FROM diego-cli:latest
+FROM diegoteam/diego-cli:latest
 
 MAINTAINER Roberto Jimenez Sanchez, <jszroberto@gmail.com>
 
