@@ -1,0 +1,120 @@
+#!/bin/bash
+
+#
+#
+# Main block
+#
+#
+usage()
+{
+cat << EOF
+usage: $0 options
+
+This scrips update Diego and CF repositories.
+
+OPTIONS:
+   --cfdir      Location of the CF repository
+   --gardendir  Location of the Garden-linux repository 
+   --diegodir   Location of the Diego repository
+   -s           update Diego and CF repositories without changing the HEAD.
+   -f           Force updates
+   -h --help    Show the usage
+EOF
+}
+
+
+#
+# Parameter processing
+#
+async=0
+time=0
+user=""
+while [[ $# > 0 ]]
+do
+key="$1"
+shift
+case $key in
+    --cfdir)
+    CFDIR=$1
+    shift
+    ;;
+    --diegodir)
+    DIEGODIR=$1
+    shift
+    ;;
+    --gardendir)
+    GARDENDIR=$1
+    shift
+    ;;
+    --ibmdir)
+    ibmrelease=$1
+    shift
+    ;;
+    -s)
+    SILENCE=1
+    ;;
+    -f)
+    FORCE=1
+    ;;
+    -h|--help)
+    usage
+    exit 1
+    ;;
+    *)
+    args="$key $*"
+    break
+    ;;
+esac
+done
+
+
+if [[ "$CFDIR" == "" ]] && [[ "$DIEGODIR" == "" ]] && [[ "$GARDENDIR" == "" ]]; then
+    usage
+    exit 1
+fi
+
+
+push_pop_repo(){
+    echo "INFO: UPDATING REPO $repository "
+    repository=$1
+    branch=$2
+    if [[ -n "$repository" ]]; then
+        pushd $repository
+        if [[ SILENCE ]]
+        then 
+            previous_hash=$(git rev-parse HEAD) 
+        fi
+        git checkout $branch
+        if [[ $(git rev-parse HEAD) != $(git rev-parse @{u}) ]] || [[ -n $FORCE ]]
+        then
+            $3
+        fi
+
+        if [[ SILENCE ]]
+        then 
+            git checkout $previous_hash
+        fi 
+
+        popd
+    fi
+}
+
+update_cf(){
+    git pull origin $branch
+    ./update
+}
+
+update_diego(){
+    git pull origin $branch
+    ./scripts/update
+}
+
+update_garden(){
+    git pull origin $branch
+    git pull --recurse-submodules
+    # git pull origin develop
+}
+
+push_pop_repo $CFDIR master update_cf
+push_pop_repo $DIEGODIR master update_diego
+push_pop_repo $GARDENDIR master update_garden

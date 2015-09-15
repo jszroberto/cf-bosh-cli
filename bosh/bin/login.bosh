@@ -71,4 +71,3 @@ else
 	BOSH_USER=$BOSH_USER BOSH_PASSWORD=$BOSH_PWD bosh target $BOSH_DIRECTOR
     bosh login $BOSH_USER $BOSH_PWD
 fi
-$*

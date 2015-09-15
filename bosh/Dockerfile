@@ -22,7 +22,11 @@ RUN /usr/local/rvm/bin/rvm install ruby install ruby 2.1.6
 # Installation of Bosh CLI
 
 RUN /bin/bash -l -c "gem install bundler --no-ri --no-rdoc"
-RUN /bin/bash -l -c "gem install bosh_cli bosh_cli_plugin_micro --no-ri --no-rdoc"
+#RUN /bin/bash -l -c "gem cleanup bosh_cli"
+#RUN /bin/bash -l -c "bundle	update bosh_cli"
+RUN /bin/bash -l -c "gem install bosh_cli --no-ri --no-rdoc -v 1.2652.0"
+#RUN /bin/bash -l -c "gem install bosh_cli bosh_cli_plugin_micro --no-ri --no-rdoc"
+
 ENV ENV_CONFIG /workspace/env.conf
 VOLUME /workspace
 WORKDIR /workspace

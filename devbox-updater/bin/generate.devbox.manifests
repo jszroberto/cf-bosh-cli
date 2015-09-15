@@ -101,10 +101,17 @@ local cf_previous_hash=$(git rev-parse HEAD)
 git pull origin develop
 git checkout $cf_version
 
+# ${DIEGODIR}/stubs-for-cf-release/enable_diego_ssh_in_cf.yml \
+stub="${DIEGODIR}/stubs-for-cf-release/enable_diego_ssh_in_cf.yml"
+if [[ ! -e "${DIEGODIR}/stubs-for-cf-release/enable_diego_ssh_in_cf.yml" ]]
+then 
+    stub="${DIEGODIR}/stubs-for-cf-release/enable_diego_ssh_in_cc.yml"
+fi
+
 ./scripts/generate_deployment_manifest warden \
     ${manifests}/tmp/director.yml \
     ${DIEGODIR}/stubs-for-cf-release/enable_consul_with_cf.yml \
-    ${DIEGODIR}/stubs-for-cf-release/enable_diego_ssh_in_cf.yml \
+    $stub \
     > ${manifests}/tmp/cf.yml
 
 cp ${manifests}/tmp/cf.yml ${manifests}/cf.yml

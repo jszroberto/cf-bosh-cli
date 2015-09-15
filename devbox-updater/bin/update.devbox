@@ -65,22 +65,12 @@ if [[ "$CFDIR" == "" ]] || [[ "$DIEGODIR" == "" ]] || [[ "$GARDENDIR" == "" ]]; 
     exit 1
 fi
 
-check_if_stemcell(){
-	if [[ "$(bosh releases | grep $1)" == "" ]]
-	then 
-		return 0
-	else
-		return 1
-	fi 
+is_stemcell_missing(){
+	[[ "$(bosh stemcells | grep $1)" == "" ]]
 }
 
-check_if_release(){
-	if [[ "$(bosh releases | grep $1)" == "" ]]
-	then 
-		return 0
-	else
-		return 1
-	fi 
+is_release_in_director(){
+	[[ "$(bosh releases | grep $1)" != "" ]]
 }
 
 get_commit_hash(){
@@ -100,13 +90,13 @@ get_commit_hash(){
 
 upload_release(){
 
-	if [[ ! $(check_if_release $(get_commit_hash  $1 $2)) ]]
+	if is_release_in_director $(get_commit_hash  $1 $2)
 	then
+		echo "INFO: Release already found in Bosh director"
+	else
 		pushd $1 &>/dev/null
 		bosh upload release releases/$2
 		popd &>/dev/null
-	else
-		echo "INFO: Release already found in Bosh director"
 	fi
 	
 }
@@ -117,7 +107,7 @@ login.bosh
 
 # Update repositories
 
-update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR
+update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR -f
 
 # Get releases version
 
@@ -135,27 +125,31 @@ upload_release $GARDENDIR "garden-linux/garden-linux-${garden_linux_version}.yml
 # Check if stemcell is there. 
 
 stemcell=bosh-warden-boshlite-ubuntu-trusty-go_agent
-if [[ ! check_if_stemcell $stemcell ]]
+
+if is_stemcell_missing $stemcell 
 then
 	curl -L -J -O https://bosh.io/d/stemcells/$stemcell
 	bosh upload stemcell $stemcell
 fi 
 
-
-bosh cloudcheck 
+if [[ "$(bosh deployments)" == *"No deployments"* ]]
+then
+	bosh -d manifests/cf.yml cloudcheck
+	bosh -d manifests/diego.yml  cloudcheck
+fi
 
 # Generate manifests
 
 mkdir -p manifests
-generate.devbox.manifests -d $diego_version -c $cf_version -o manifests --cfdir $CFDIR --diegodir $DIEGODIR --lite 
+generate.devbox.manifests -d $diego_version -c v$cf_version -o manifests --cfdir $CFDIR --diegodir $DIEGODIR --lite 
 
 # Deploy manifests
 
-bosh -d manifests/cf.yml deploy
-bosh cloudcheck 
+echo yes | bosh -d manifests/cf.yml deploy
+bosh -d manifests/cf.yml cloudcheck 
 
-bosh -d manifests/diego.yml deploy
-bosh cloudcheck
+echo yes | bosh -d manifests/diego.yml deploy
+bosh -d manifests/diego.yml  cloudcheck
 
 # Cleanup releases
 
