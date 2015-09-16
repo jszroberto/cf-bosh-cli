@@ -31,9 +31,9 @@ ENV ENV_CONFIG /workspace/env.conf
 VOLUME /workspace
 WORKDIR /workspace
 
-RUN mkdir /root/bin 
-RUN echo 'export PATH=$PATH:/root/bin' >> ~/.bashrc
-RUN echo 'export PATH=$PATH:/root/bin' >> /etc/profile
+RUN mkdir /root/bin
+ 
+ENV PATH $PATH:/root/bin
 
 ADD bin/* /root/bin/
 RUN chmod +x /root/bin/*

@@ -12,14 +12,9 @@ RUN wget 'https://cli.run.pivotal.io/stable?release=linux64-binary&source=github
 # Installation of GO
 
 RUN apt-get update && apt-get install golang -y
-#ENV GOROOT /usr/lib/go
-#ENV GOBIN /usr/bin/go
-ENV GOPATH /root/go 
-RUN echo 'export GOPATH=/root/go' >> ~/.bashrc
-#RUN echo 'export GOBIN=/usr/bin/go' >> ~/.bashrc
-#RUN echo 'export GOROOT=/usr/lib/go' >> ~/.bashrc
 
-RUN echo 'export PATH=$PATH:$GOROOT/bin:$GOPATH/bin' >> ~/.bashrc
+ENV GOPATH /root/go 
+ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
 ENV CFDIR /root/cf-release
 
