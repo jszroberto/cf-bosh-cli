@@ -17,6 +17,7 @@ usage: $0 options
 Updates a Bosh-lite devbox with the latest CF major version and compatible Diego
 
 OPTIONS:
+   -c           CF version to use in the environment instead of latest.
    --cfdir      Location of the CF repository
    --diegodir   Location of the Diego repository
    --gardendir  Location of the Garden-Linux repository
@@ -40,6 +41,10 @@ shift
 case $key in
     --cfdir)
     CFDIR=$1
+    shift
+    ;;
+    -c)
+    CF_VERSION=$1
     shift
     ;;
     --diegodir)
@@ -129,7 +134,12 @@ update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDI
 
 # Get releases version
 
-cf_version=$(get.latest.major.release $CFDIR)
+if [[ ! -n "$CF_VERSION" ]]
+    cf_version=$(get.latest.major.release $CFDIR)
+else
+    cf_version=$CF_VERSION
+fi 
+
 row=$(get.cf.compatible.versions $cf_version)
 diego_version=$(echo $row | cut -d "," -f2)
 garden_linux_version=$(echo $row | cut -d "," -f3)

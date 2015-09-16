@@ -1,21 +1,26 @@
-# cf-bosh-cli
-A container to work with CF and Bosh CLIs. It is a already configured container with many packages, programs or tools used to work with CF and Bosh. This image is intended to be used by DevOps engineers to operate, debug and develop automatic solutions. 
+# Containers to work with Diego and CF
 
+A set of containers built to work with CF, Diego and Bosh. It is a already configured container with many packages, programs or tools used to work with CF, Diego and Bosh. This images are intended to be used by DevOps engineers to operate, debug and develop automatic solutions. 
 
-## Instructions to run Bosh CLI image
+## Instructions valid for all images
 
-## Instructions to run CF CLI Image 
+To set up any enviromental variable, you can have a file named "env.conf" in the mounted volume which is loaded when the container is launched. For mounting a volume just add this option to the 'docker run' command: 
 
-## Instructions to run Diego CLI Image
+```
+docker run -v $(pwd):/workspace
+
+```
 
 ## Instructions to run Devbox Updater
+
+This image updates or set up a Bosh Lite with latest CF version and other compatible releases: 
 
 ```
 $ docker run -i -t diegoteam/devbox-updater 
 
 ```
 
-This image is going to generate some artifacts than can be reused if the updates fails in order to speed up need attempts or to use other manifests. If the artifacts are found in the folder, they won't be generated. 
+This image generates some artifacts than can be reused if the updates fails in order to speed up need attempts or to use other manifests. If the artifacts are found in the folder, they won't be generated. 
 
 ```
 
@@ -33,6 +38,11 @@ $ docker run -i -t -v $(pwd):/workspace diegoteam/devbox-updater
 
 ```
 
+You can set up some other optional environment variables for the container: 
+	- STEMCELL: specifies a determinate stemcell. Ex: 
+	- NO_UPLOAD=1: new releases tarballs won't be uploaded. 
+	- CLEANUP=1 : removes all unused stemcells and releases in the Bosh director
+	- CF_VERSION: the environment will be updated using this CF version. 
 
 ## Instructions to run Devbox Manifest Generator 
 
@@ -47,7 +57,7 @@ $ docker run -i -t diegoteam/cats
 
 ```
 
-To run the tests using a personalized configuration: 
+To run the tests using a personalized configuration or against remote environments: 
 
 ```
 $ docker run -i -t -v $(pwd):/workspace -e "CONFIG=/workspace/integration_config.yml" diegoteam/cats 
@@ -58,10 +68,8 @@ This will run the latest version of the tests against your environment. In case 
 
 ```
 -e "COMMIT=f98149cdsjfl9814198149"
+
 ```
-
-Alternatively, you can have a file named "env.conf" in the mounted volume which would be loaded when the container is launched. 
-
 
 ## Instructions to run DATs 
 
@@ -72,7 +80,7 @@ $ docker run -i -t diegoteam/dats
 
 ```
 
-To run the tests using a personalized configuration or for other external environments: 
+To run the tests using a personalized configuration or for other remote environments: 
 
 ```
 $ docker run -i -t -v $(pwd):/workspace -e "CONFIG=/workspace/integration_config.yml" diegoteam/dats 
@@ -86,6 +94,4 @@ This will run the latest version of the tests against your environment. In case 
 -e "COMMIT=f98149cdsjfl9814198149"
 
 ```
-
-Alternatively, you can have a file named "env.conf" in the mounted volume which would be loaded when the container is launched. 
 
