@@ -1,4 +1,4 @@
-# Containers to work with Diego and CF
+# Diego, Bosh and CF containers for DevOps
 
 A set of containers built to work with CF, Diego and Bosh. It is a already configured container with many packages, programs or tools used to work with CF, Diego and Bosh. This images are intended to be used by DevOps engineers to operate, debug and develop automatic solutions. 
 
@@ -43,10 +43,6 @@ You can set up some other optional environment variables for the container:
 	- NO_UPLOAD=1: new releases tarballs won't be uploaded. 
 	- CLEANUP=1 : removes all unused stemcells and releases in the Bosh director
 	- CF_VERSION: the environment will be updated using this CF version. 
-
-## Instructions to run Devbox Manifest Generator 
-
-
 
 ## Instructions to run CATs
 
