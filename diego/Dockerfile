@@ -9,9 +9,11 @@ RUN cf install-plugin Diego-Beta -r CF-Community
 
 ENV DIEGODIR /root/diego-release
 ENV GARDENDIR /root/garden-linux-release
+ENV STEMCELL=bosh-warden-boshlite-ubuntu-trusty-go_agent
 
 RUN git clone https://github.com/cloudfoundry-incubator/diego-release.git /root/diego-release
 RUN git clone https://github.com/cloudfoundry-incubator/garden-linux-release.git /root/garden-linux-release
+
 
 
 RUN mkdir -p /var/lib/consul && mkdir -p /usr/share/consul && mkdir -p /etc/consul/conf.d

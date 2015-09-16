@@ -3,17 +3,89 @@
 usage()
 {
 cat << EOF
-usage: $0 VERSION
+usage: $0 VERSION [-f]
 
 This gives you the compatible version of Diego, Garden linux, etc for a given CF version
-
+OPTIONS:
+   -f  Force the recreation of the table
+   -h --help    Show the usage
 EOF
 }
 
-if [[ $# != 1 ]]
-then
-	usage
-	exit 1
-fi 
 
-echo "$(generate.compatibility.table | grep "^${1}" | sort | head -n 1)"
+# Parameter processing
+#
+async=0
+time=0
+user=""
+while [[ $# > 0 ]]
+do
+key="$1"
+shift
+case $key in
+    -f)
+    FORCE=1
+    ;;
+    -h|--help)
+    usage
+    exit 1
+    ;;
+    *)
+    args="$key $*"
+    break
+    ;;
+esac
+done
+
+get_row(){
+	row="$(cat compatibility.csv | grep "^${1}" | sort | head -n 1)"
+	if [[ -n "$row" ]]
+	then
+		echo $row
+	else
+		echo "ERROR: Compatible versions for CF $1 not found"
+		exit 1
+	fi
+}
+
+get_cf_compatible_versions(){
+	if [[ $# != 1 ]]
+	then
+		usage
+		exit 1
+	fi
+
+	if [[ ! -f compatibility.csv ]] || [[ FORCE ]]
+	then
+		generate.compatibility.table > compatibility.csv
+		row=$(get_row $1)
+		if [[ -n "$row" ]]
+		then
+			echo $row
+		else
+			echo "ERROR: Compatible versions for CF $1 not found"
+			exit 1
+		fi
+	else
+		row=$(get_row $1)
+		if [[ -n "$row" ]]
+		then
+			echo $row
+			exit 0
+		else
+			generate.compatibility.table > compatibility.csv
+			row=$(get_row $1)
+			if [[ -n "$row" ]]
+			then
+				echo $row
+			else
+				echo "ERROR: Compatible versions for CF $1 not found"
+				exit 1
+			fi
+		fi 
+	fi
+}
+
+get_cf_compatible_versions $args
+
+

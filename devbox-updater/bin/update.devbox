@@ -21,11 +21,11 @@ OPTIONS:
    --diegodir   Location of the Diego repository
    --gardendir  Location of the Garden-Linux repository
    --no-upload  No realeses will be upload into director
+   --stemcell   Stemcell used
    --cleanup    Unused stemcells and release will be removed after update
    -h --help    Show the usage
 EOF
 }
-
 
 #
 # Parameter processing
@@ -50,6 +50,10 @@ case $key in
     GARDENDIR=$1
     shift
     ;;
+    --stemcell)
+    STEMCELL=$1
+    shift
+    ;;
     --no-upload)
     NO_UPLOAD=1
     ;;
@@ -68,7 +72,7 @@ esac
 done
 
 
-if [[ "$CFDIR" == "" ]] || [[ "$DIEGODIR" == "" ]] || [[ "$GARDENDIR" == "" ]]; then
+if [[ "$CFDIR" == "" ]] || [[ "$DIEGODIR" == "" ]] || [[ "$GARDENDIR" == "" ]] || [[ "$STEMCELL" == "" ]]; then
     usage
     exit 1
 fi
@@ -137,17 +141,15 @@ then
 	upload_cf_releases
 fi 
 
-# Check if stemcell is there. 
+# Check if stemcell is there.
 
-stemcell=bosh-warden-boshlite-ubuntu-trusty-go_agent
-
-if is_stemcell_missing $stemcell 
+if is_stemcell_missing $STEMCELL 
 then
-	curl -L -J -O https://bosh.io/d/stemcells/$stemcell
-	bosh upload stemcell $stemcell
+	curl -L -J -O https://bosh.io/d/stemcells/$STEMCELL
+	bosh upload stemcell $STEMCELL 
 fi
 
-if [[ "$(bosh deployments)" == *"No deployments"* ]]
+if [[ "$(bosh deployments)" != *"No deployments"* ]]
 then
 	bosh -d manifests/cf.yml cloudcheck
 	bosh -d manifests/diego.yml  cloudcheck
@@ -178,4 +180,6 @@ bosh cloudcheck
 if [[ $CLEANUP ]]
 then 
 	bosh cleanup --all 
-fi 
+fi
+
+
