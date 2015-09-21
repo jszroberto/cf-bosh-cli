@@ -1,7 +1,8 @@
 #!/bin/bash
 
 set -x 
-
+set -e 
+set -o pipefail
 #
 #
 # Main block
@@ -46,15 +47,15 @@ case $key in
     shift
     ;;
     -c)
-    cf_version=$1
+    CF_VERSION=$1
     shift
     ;;
     -d)
-    diego_version=$1
+    DIEGO_VERSION=$1
     shift
     ;;
     -o)
-    manifests=$(readlink -e $1)
+    manifests=$(readlink -m $1)
     shift
     ;;
     --lite)
@@ -72,7 +73,7 @@ esac
 done
 
 
-if [[ "$CFDIR" == "" ]] && [[ "$DIEGODIR" == "" ]] && [[ "$manifests" == "" ]]; then
+if [[ "$CF_VERSION" == "" ]] || [[ "$DIEGO_VERSION" == "" ]] || [[ "$CFDIR" == "" ]] || [[ "$DIEGODIR" == "" ]] || [[ "$manifests" == "" ]]; then
     usage
     exit 1
 fi
@@ -90,34 +91,39 @@ else
 fi
 
 pushd $DIEGODIR
-local diego_previous_hash=$(git rev-parse HEAD)
+# local diego_previous_hash=$(git rev-parse HEAD)
 git pull origin develop
-git checkout $diego_version
+git checkout $DIEGO_VERSION
 
 pushd $CFDIR
 
-local cf_previous_hash=$(git rev-parse HEAD)
+# local cf_previous_hash=$(git rev-parse HEAD)
 
 git pull origin develop
-git checkout $cf_version
+git checkout $CF_VERSION
 
 # ${DIEGODIR}/stubs-for-cf-release/enable_diego_ssh_in_cf.yml \
-stub="${DIEGODIR}/stubs-for-cf-release/enable_diego_ssh_in_cf.yml"
-if [[ ! -e "${DIEGODIR}/stubs-for-cf-release/enable_diego_ssh_in_cf.yml" ]]
+enable_diego_ssh_stub="${DIEGODIR}/stubs-for-cf-release/enable_diego_ssh_in_cf.yml"
+if [[ ! -f "$enable_diego_ssh_stub" ]]
 then 
-    stub="${DIEGODIR}/stubs-for-cf-release/enable_diego_ssh_in_cc.yml"
+    enable_diego_ssh_stub="${DIEGODIR}/stubs-for-cf-release/enable_diego_ssh_in_cc.yml"
 fi
 
-./scripts/generate_deployment_manifest warden \
+generation_script="./scripts/generate_deployment_manifest"
+if [[ ! -f "$generation_script" ]]
+then
+    generation_script="./generate_deployment_manifest"
+fi
+
+$generation_script warden \
     ${manifests}/tmp/director.yml \
     ${DIEGODIR}/stubs-for-cf-release/enable_consul_with_cf.yml \
-    $stub \
+    $enable_diego_ssh_stub \
     > ${manifests}/tmp/cf.yml
 
 cp ${manifests}/tmp/cf.yml ${manifests}/cf.yml
 
-
-git checkout $cf_previous_hash
+# git checkout $cf_previous_hash
 popd 
 
 ./scripts/generate-deployment-manifest \
@@ -130,7 +136,7 @@ popd
     ${manifests}/tmp \
     > ${manifests}/tmp/diego.yml
 cp ${manifests}/tmp/diego.yml ${manifests}/diego.yml
-git checkout $diego_previous_hash
+# git checkout $diego_previous_hash
 popd 
 
 }

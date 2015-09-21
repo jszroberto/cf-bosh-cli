@@ -119,9 +119,9 @@ upload_release(){
 }
 
 upload_cf_releases(){
-	upload_release $CFDIR "cf-${cf_version}.yml"
-	upload_release $DIEGODIR "diego-${diego_version}.yml"
-	upload_release $GARDENDIR "garden-linux/garden-linux-${garden_linux_version}.yml"
+	upload_release $CFDIR "cf-${CF_VERSION}.yml"
+	upload_release $DIEGODIR "diego-${DIEGO_VERSION}.yml"
+	upload_release $GARDENDIR "garden-linux/garden-linux-${GARDEN_LINUX_VERSION}.yml"
 }
 
 # Login bosh
@@ -130,26 +130,27 @@ login.bosh
 
 # Update repositories
 
-update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR
+
 
 # Get releases version
 
 if [[ ! -n "$CF_VERSION" ]]
-    cf_version=$(get.latest.major.release $CFDIR)
-else
-    cf_version=$CF_VERSION
-fi 
+    CF_VERSION=$(get.latest.major.release $CFDIR)
+fi
 
-row=$(get.cf.compatible.versions $cf_version)
-diego_version=$(echo $row | cut -d "," -f2)
-garden_linux_version=$(echo $row | cut -d "," -f3)
+if [[ ! -n "$DIEGO_VERSION" ]] || [[ ! -n "$GARDEN_LINUX_VERSION" ]]
+then 
+    row=$(get.cf.compatible.versions $CF_VERSION)
+    DIEGO_VERSION=$(echo $row | cut -d "," -f2)
+    GARDEN_LINUX_VERSION=$(echo $row | cut -d "," -f3)
+fi
 
 # Upload releases
 
 if [[ ! $NO_UPLOAD ]]
 then
 	upload_cf_releases
-fi 
+fi
 
 # Check if stemcell is there.
 
@@ -171,9 +172,9 @@ mkdir -p manifests
 
 if [[ ! -f "manifests/cf.yml" ]] || [[ ! -f "manifests/diego.yml" ]]
 then
-	update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR -f
-	generate.devbox.manifests -d $diego_version -c v$cf_version -o manifests --cfdir $CFDIR --diegodir $DIEGODIR --lite 
-fi 
+    update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR -f
+	generate.devbox.manifests -d $DIEGO_VERSION -c v$CF_VERSION -o manifests --cfdir $CFDIR --diegodir $DIEGODIR --lite 
+fi
 
 # Deploy manifests
 

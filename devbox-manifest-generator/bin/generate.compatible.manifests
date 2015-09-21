@@ -8,10 +8,13 @@ then
 else
 	CF_VERSION=$(get.latest.major.release $CFDIR)
 fi
-  
-row=$(get.cf.compatible.versions $CF_VERSION)
-diego_version=$(echo $row | cut -d "," -f2)
-garden_linux_version=$(echo $row | cut -d "," -f3)
 
-update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR -f
-generate.devbox.manifests -d $diego_version -c v$CF_VERSION -o manifests --cfdir $CFDIR --diegodir $DIEGODIR --lite 
+if [[ ! -n "DIEGO_VERSION" ]] 
+then 
+	row=$(get.cf.compatible.versions $CF_VERSION)
+	DIEGO_VERSION=$(echo $row | cut -d "," -f2)
+fi 
+
+update.cf.repositories -f
+generate.devbox.manifests -d $DIEGO_VERSION -c v$CF_VERSION -o manifests --lite
+

@@ -1,0 +1,27 @@
+#!/bin/bash
+
+cleanup_release_in_director(){
+    release=""
+    name=$1
+    bosh releases  | grep -v "*\|Commit Hash" | grep '|' | while read line; do 
+        other_release=$(echo $line | cut -d '|' -f2 | sed 's/ //g' )
+        if [[ "$other_release" != "" ]]
+        then
+            release=$other_release
+        fi
+        if [[ "$release" == "$name" ]]
+        then
+            version=$(echo $line | cut -d '|' -f3 | sed 's/ //g' )
+            echo "bosh delete release $name $version"
+        fi 
+    done
+}
+
+cleanup_releases_in_director(){
+    for image in "$@"
+    do
+        cleanup_release_in_director $image
+    done
+}
+
+cleanup_release_in_director

@@ -11,9 +11,10 @@ This scrips gives you the lastest major version of a Bosh Release
 EOF
 }
 
-get_latest_release(){
+get_latest_major_release(){
 	pushd $repository &>/dev/null
-	if [[ "$commit" != "" ]]
+
+	if [[ -n "$commit" ]]
 	then
 		git checkout $commit &>/dev/null
  	fi
@@ -36,12 +37,12 @@ fi
 if [[ -n "$2" ]]
 then
 	commit=$2
-fi 
+fi
 
 if [[ ! -n "$repository" ]]; then
 	usage
 	exit 1
 fi 
 
-get_latest_release
+get_latest_major_release
 echo $version

@@ -1,0 +1,125 @@
+#!/bin/bash
+
+
+set -x
+set -e 
+set -o pipefail
+
+#
+# Usage statement
+#
+usage() {
+    echo "Usage: $0 [OPTIONS]...[ARGS]"
+    echo
+    echo "   --cfdir <folder>"
+    echo "                   Folder where the CF release is"
+    echo "   --diegodir <folder>"
+    echo "                   Folder where the CF release is"
+    echo "   -o <folder>"
+    echo "                   Folder where the results will be stored"
+    echo "   --newcf <name>"
+    echo "                   Tag name or Commit hash of a CF version"
+    echo "   --oldcf <name>"
+    echo "                   Tag name or Commit hash of a CF version"
+    echo "   --newdiego <name>"
+    echo "                   Tag name or Commit hash of a Diego version"
+    echo "   --olddiego <name>"
+    echo "                   Tag name or Commit hash of a Diego version"
+    echo "  --help  Output this help."
+}
+
+
+#
+#
+# Main block
+#
+#
+
+if [ $# -lt 1 ]; then
+    usage
+    exit 1
+fi
+
+#
+# Parameter processing
+#
+async=0
+time=0
+user=""
+while [[ $# > 0 ]]
+do
+key="$1"
+shift
+case $key in
+    -o)
+    OUTPUT=$1
+    shift
+    ;;
+    --cfdir)
+    CFDIR=$1
+    shift
+    ;;
+    --diegodir)
+    DIEGODIR=$1
+    shift
+    ;;
+    --newcf)
+    NEWCF=$1
+    shift
+    ;;
+    --oldcf)
+    OLDCF=$1
+    shift
+    ;;
+    --newdiego)
+    NEWDIEGO=$1
+    shift
+    ;;
+    --olddiego)
+    OLDDIEGO=$1
+    shift
+    ;;
+    -h|--help)
+    usage
+    exit 1
+    ;;
+    *)
+    args="$key $*"
+    break
+    ;;
+esac
+done
+
+
+if [[ "$OLDCF" == "" ]] || [[ "$NEWCF" == "" ]] || [[ "$CFDIR" == "" ]] || [[ "$DIEGODIR" == "" ]]; then
+    usage
+    exit 1
+fi
+
+if [[ ! -n "$NEWDIEGO" ]]
+then
+    row=$(get.cf.compatible.versions $NEWCF)
+    NEWDIEGO=$(echo $row | cut -d "," -f2)
+fi
+
+if [[ ! -n "$NEWDIEGO" ]]
+then
+    row=$(get.cf.compatible.versions $OLDCF)
+    NEWDIEGO=$(echo $row | cut -d "," -f2)
+fi
+
+manifests=${OUTPUT}/manifests
+diffs=${OUTPUT}/diffs
+
+generate.devbox.manifests -d $NEWDIEGO -c v$NEWCF -o $manifests --cfdir $CFDIR --diegodir $DIEGODIR -o $manifests
+mv $manifests/diego.yml "${manifests}/boshlite-diego-${NEWDIEGO}-for-cf-${NEWCF}.yml"
+mv $manifests/cf.yml ${manifests}/boshlite-cf-${NEWCF}.yml
+
+generate.devbox.manifests -d $OLDDIEGO -c v$OLDCF -o $manifests --cfdir $CFDIR --diegodir $DIEGODIR -o $manifests
+mv $manifests/diego.yml "${manifests}/boshlite-diego-${OLDDIEGO}-for-cf-${OLDCF}.yml"
+mv $manifests/cf.yml ${manifests}/boshlite-cf-${OLDCF}.yml
+
+mkdir -p $diffs
+
+rfcdiff --html --stdout ${manifests}/boshlite-cf-${NEWCF}.yml ${manifests}/boshlite-cf-${OLDCF}.yml > $diffs/boshlite-cf-diff-between-${NEWCF}-${OLDCF}.html
+rfcdiff --html --stdout "${manifests}/boshlite-diego-${NEWDIEGO}-for-cf-${NEWCF}.yml" "${manifests}/boshlite-diego-${OLDDIEGO}-for-cf-${OLDCF}.yml" > $diffs/boshlite-diego-diff-between-${NEWDIEGO}-${OLDDIEGO}.html

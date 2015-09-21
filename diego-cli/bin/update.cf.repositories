@@ -46,10 +46,6 @@ case $key in
     GARDENDIR=$1
     shift
     ;;
-    --ibmdir)
-    ibmrelease=$1
-    shift
-    ;;
     -s)
     SILENCE=1
     ;;
@@ -101,7 +97,7 @@ push_pop_repo(){
 
 update_cf(){
     git pull origin $branch
-    ./update
+    ./scripts/update
 }
 
 update_diego(){
