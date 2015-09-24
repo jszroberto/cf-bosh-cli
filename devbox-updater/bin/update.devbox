@@ -135,6 +135,7 @@ login.bosh
 # Get releases version
 
 if [[ ! -n "$CF_VERSION" ]]
+then
     CF_VERSION=$(get.latest.major.release $CFDIR)
 fi
 
