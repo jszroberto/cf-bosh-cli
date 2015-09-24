@@ -93,7 +93,7 @@ is_release_in_director(){
 get_commit_hash(){
 	release_yml=releases/$2
 	
-	if [[ -f "$1/$release_yml" ]]
+	if [[ -e "$1/$release_yml" ]]
 	then
 		pushd $1 &>/dev/null
 		echo $(cat $release_yml | grep "commit_hash:" | sed "s/ //g" |  sed "s/'//g" | cut -d ':' -f 2 )
@@ -133,16 +133,14 @@ login.bosh
 if [[ ! -n "$CF_VERSION" ]]
 then
     CURRENT_CF_VERSION=$(get.latest.major.release $CFDIR)
-    pushd $CFDIR 
+    pushd $CFDIR
     git pull origin master
+    CF_VERSION=$(get.latest.major.release $CFDIR)
     popd
-    NEW_CF_VERSION=$(get.latest.major.release $CFDIR)
-    if [[ "$NEW_CF_VERSION" != "$CURRENT_CF_VERSION" ]]
-    then
-        echo "INFO: Detected new CF major release"
+    if [[ "$CURRENT_CF_VERSION" == "$CF_VERSION" ]]
+    then 
         NEW_RELEASE=1
-    fi 
-    CF_VERSION=$NEW_CF_VERSION
+    fi
 fi
 
 if [[ ! -n "$DIEGO_VERSION" ]] || [[ ! -n "$GARDEN_LINUX_VERSION" ]]
@@ -150,11 +148,6 @@ then
     row=$(get.cf.compatible.versions $CF_VERSION)
     DIEGO_VERSION=$(echo $row | cut -d "," -f2)
     GARDEN_LINUX_VERSION=$(echo $row | cut -d "," -f3)
-    if [[ ! -n "$DIEGO_VERSION" ]] || [[ ! -n "$GARDEN_LINUX_VERSION" ]]
-        then
-        echo "ERROR: Not compatible Diego and Garden Linux version found"
-        exit 1
-    fi
 fi
 
 # Upload releases
@@ -172,7 +165,7 @@ then
 	bosh upload stemcell $STEMCELL 
 fi
 
-if [[ "$(bosh deployments)" != *"No deployments"* ]] && [[ -f "manifests/cf.yml" ]]  && [[ -f "manifests/diego.yml" ]]
+if [[ "$(bosh deployments)" != *"No deployments"* ]] && [[ ! -f "manifests/cf.yml" ]] && [[ ! -f "manifests/diego.yml" ]]
 then
 	bosh -d manifests/cf.yml cloudcheck
 	bosh -d manifests/diego.yml  cloudcheck

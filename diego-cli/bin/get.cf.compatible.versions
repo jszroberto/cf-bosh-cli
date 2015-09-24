@@ -43,7 +43,7 @@ get_row(){
 	then
 		echo $row
 	else
-		echo "ERROR: Compatible versions for CF $1 not found"
+		echo "ERROR: Compatible versions for CF $1 not found" 1>&2
 		exit 1
 	fi
 }
@@ -63,7 +63,7 @@ get_cf_compatible_versions(){
 		then
 			echo $row
 		else
-			echo "ERROR: Compatible versions for CF $1 not found"
+			echo "ERROR: Compatible versions for CF $1 not found" 1>&2
 			exit 1
 		fi
 	else
@@ -79,7 +79,7 @@ get_cf_compatible_versions(){
 			then
 				echo $row
 			else
-				echo "ERROR: Compatible versions for CF $1 not found"
+				echo "ERROR: Compatible versions for CF $1 not found" 1>&2
 				exit 1
 			fi
 		fi 
