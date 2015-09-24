@@ -16,7 +16,7 @@ docker run -v $(pwd):/workspace
 This image updates or set up a Bosh Lite with latest CF version and other compatible releases: 
 
 ```
-$ docker run -i -t diegoteam/devbox-updater 
+$ docker run -i -t diegoteam/cf-boshlite-updater 
 
 ```
 
@@ -35,7 +35,7 @@ manifests/
 You just need to mount a folder from your host machine: 
 
 ```
-$ docker run -i -t -v $(pwd):/workspace diegoteam/devbox-updater 
+$ docker run -i -t -v $(pwd):/workspace diegoteam/cf-boshlite-updater
 
 ```
 
