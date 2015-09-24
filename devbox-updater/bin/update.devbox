@@ -136,6 +136,7 @@ login.bosh
 
 if [[ ! -n "$CF_VERSION" ]]
 then
+    update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR
     CF_VERSION=$(get.latest.major.release $CFDIR)
 fi
 
@@ -161,7 +162,7 @@ then
 	bosh upload stemcell $STEMCELL 
 fi
 
-if [[ "$(bosh deployments)" != *"No deployments"* ]]
+if [[ "$(bosh deployments)" != *"No deployments"* ]] && [[ -f "manifests/cf.yml" ]]  && [[ -f "manifests/diego.yml" ]]
 then
 	bosh -d manifests/cf.yml cloudcheck
 	bosh -d manifests/diego.yml  cloudcheck
