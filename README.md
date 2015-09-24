@@ -88,7 +88,7 @@ $ docker run -i -t -v $(pwd):/workspace -e "CONFIG=/workspace/integration_config
 This will run the latest version of the tests against your environment. In case you want a specific versions of the tests, just set up the following environmental variable: 
 
 ```
--e "COMMIT=f98149cdsjfl9814198149"
+-e "DATS_COMMIT=f98149cdsjfl9814198149"
 
 ```
 
