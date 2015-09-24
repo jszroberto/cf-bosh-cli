@@ -128,16 +128,21 @@ upload_cf_releases(){
 
 login.bosh
 
-# Update repositories
-
-
-
 # Get releases version
 
 if [[ ! -n "$CF_VERSION" ]]
 then
-    update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR
-    CF_VERSION=$(get.latest.major.release $CFDIR)
+    CURRENT_CF_VERSION=$(get.latest.major.release $CFDIR)
+    pushd $CFDIR 
+    git pull origin master
+    popd
+    NEW_CF_VERSION=$(get.latest.major.release $CFDIR)
+    if [[ "$NEW_CF_VERSION" != "" ]]
+    then
+        echo "INFO: Detected new CF major release"
+        NEW_RELEASE=1
+    fi 
+    CF_VERSION=$NEW_CF_VERSION
 fi
 
 if [[ ! -n "$DIEGO_VERSION" ]] || [[ ! -n "$GARDEN_LINUX_VERSION" ]]
@@ -172,7 +177,7 @@ fi
 
 mkdir -p manifests
 
-if [[ ! -f "manifests/cf.yml" ]] || [[ ! -f "manifests/diego.yml" ]]
+if [[ ! -f "manifests/cf.yml" ]] || [[ ! -f "manifests/diego.yml" ]] || [[ $NEW_RELEASE ]]
 then
     update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR -f
 	generate.devbox.manifests -d $DIEGO_VERSION -c v$CF_VERSION -o manifests --cfdir $CFDIR --diegodir $DIEGODIR --lite 
