@@ -137,7 +137,7 @@ then
     git pull origin master
     popd
     NEW_CF_VERSION=$(get.latest.major.release $CFDIR)
-    if [[ "$NEW_CF_VERSION" != "" ]]
+    if [[ "$NEW_CF_VERSION" != "$CURRENT_CF_VERSION" ]]
     then
         echo "INFO: Detected new CF major release"
         NEW_RELEASE=1
