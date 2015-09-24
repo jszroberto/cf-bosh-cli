@@ -137,7 +137,7 @@ then
     git pull
     CF_VERSION=$(get.latest.major.release $CFDIR)
     popd
-    if [[ "$CURRENT_CF_VERSION" == "$CF_VERSION" ]]
+    if [[ "$CURRENT_CF_VERSION" != "$CF_VERSION" ]]
     then 
         NEW_RELEASE=1
     fi
