@@ -151,6 +151,7 @@ then
     DIEGO_VERSION=$(echo $row | cut -d "," -f2)
     GARDEN_LINUX_VERSION=$(echo $row | cut -d "," -f3)
     if [[ ! -n "$DIEGO_VERSION" ]] || [[ ! -n "$GARDEN_LINUX_VERSION" ]]
+        then
         echo "ERROR: Not compatible Diego and Garden Linux version found"
         exit 1
     fi
