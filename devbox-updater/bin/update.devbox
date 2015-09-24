@@ -184,11 +184,11 @@ fi
 # Deploy manifests
 
 bosh deployment manifests/cf.yml
-echo yes | bosh deploy
+echo -e 'yes\nyes\nyes\nyes\nyes\nyes\nyes\nyes' | bosh deploy
 bosh cloudcheck
 
 bosh deployment manifests/diego.yml
-echo yes | bosh deploy
+echo -e 'yes\nyes\nyes\nyes\nyes\nyes\nyes\nyes' | bosh deploy
 bosh cloudcheck
 
 # Cleanup releases and stemcells
@@ -197,5 +197,4 @@ if [[ $CLEANUP ]]
 then 
     bosh cleanup --all 
 fi
-
 

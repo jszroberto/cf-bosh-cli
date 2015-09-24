@@ -3,6 +3,7 @@ FROM ubuntu:latest
 MAINTAINER Roberto Jimenez Sanchez, <jszroberto@gmail.com>
 
 RUN apt-get update && apt-get install wget apt-utils unzip jq git curl vim nano -y
+RUN apt-get install build-essential libxml2-dev libsqlite3-dev libxslt1-dev libpq-dev libmysqlclient-dev
 
 #RUN apt-get install rubygems-integration -y
 # Installation of latest Ruby 
@@ -17,6 +18,7 @@ RUN /usr/local/rvm/bin/rvm requirements
 RUN echo "gem: --no-rdoc --no-ri" >> ~/.gemrc
 #RUN /usr/local/rvm/bin/rvm install ruby --latest
 RUN /usr/local/rvm/bin/rvm install ruby install ruby 2.1.6
+
 
 
 # Installation of Bosh CLI
