@@ -3,7 +3,7 @@
 
 if [[ ! -d "diego-cf-compatibility" ]]
 then
-	git clone https://github.com/cloudfoundry-incubator/diego-cf-compatibility &>/dev/null
+  git clone https://github.com/cloudfoundry-incubator/diego-cf-compatibility &>/dev/null
 else
   pushd diego-cf-compatibility &>/dev/null
   git pull origin master  &>/dev/null
@@ -11,15 +11,14 @@ else
 fi
 
 if [[ ! -d "$CFDIR" ]]
-	then
+  then
   if [[ ! -d "cf-release" ]]
   then
      git clone https://github.com/cloudfoundry/cf-release.git &>/dev/null
-	   
+     CFDIR="cf-release"
   fi
-  CFDIR="cf-release" 
   pushd $CFDIR  &>/dev/null
-      git pull origin master  &>/dev/null
+      git pull  &>/dev/null
   popd  &>/dev/null
 fi
 
@@ -37,8 +36,8 @@ do
   cf_version=$(get.latest.major.release $CFDIR $CF_RELEASE_COMMIT_SHA)
   if [[ "$cf_version" == "" ]]
   then
-	    echo "ERROR: getting latest CF Release"
-	    exit 1
+      echo "ERROR: getting latest CF Release"
+      exit 1
   fi
   # echo "$DATE $cf_version $CF_RELEASE_COMMIT_SHA $DIEGO_RELEASE_VERSION $DIEGO_RELEASE_COMMIT_SHA $GARDEN_LINUX_RELEASE_VERSION"
   echo "$cf_version,$DIEGO_RELEASE_VERSION,$GARDEN_LINUX_RELEASE_VERSION"
@@ -47,8 +46,8 @@ done < "$table"
 }
 
 generate_table(){
-	echo "CF_VERSION,DIEGO_RELEASE_VERSION,GARDEN_LINUX_RELEASE_VERSION"
-	read_table | sed '1d' | sort -r | uniq -d
+  echo "CF_VERSION,DIEGO_RELEASE_VERSION,GARDEN_LINUX_RELEASE_VERSION"
+  read_table | sed '1d' | sort -r | uniq -d
 }
 
 generate_table 

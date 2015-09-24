@@ -96,17 +96,17 @@ push_pop_repo(){
 }
 
 update_cf(){
-    git pull origin $branch
+    git pull
     ./scripts/update
 }
 
 update_diego(){
-    git pull origin $branch
+    git pull 
     ./scripts/update
 }
 
 update_garden(){
-    git pull origin $branch
+    git pull
     git pull --recurse-submodules
     # git pull origin develop
 }

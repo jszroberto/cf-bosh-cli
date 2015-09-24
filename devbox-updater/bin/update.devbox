@@ -83,45 +83,45 @@ if [[ "$CFDIR" == "" ]] || [[ "$DIEGODIR" == "" ]] || [[ "$GARDENDIR" == "" ]] |
 fi
 
 is_stemcell_missing(){
-	[[ "$(bosh stemcells | grep $1)" == "" ]]
+    [[ "$(bosh stemcells | grep $1)" == "" ]]
 }
 
 is_release_in_director(){
-	[[ "$(bosh releases | grep $1)" != "" ]]
+    [[ "$(bosh releases | grep $1)" != "" ]]
 }
 
 get_commit_hash(){
-	release_yml=releases/$2
-	
-	if [[ -e "$1/$release_yml" ]]
-	then
-		pushd $1 &>/dev/null
-		echo $(cat $release_yml | grep "commit_hash:" | sed "s/ //g" |  sed "s/'//g" | cut -d ':' -f 2 )
-		popd &>/dev/null
-	else
-		echo "ERROR: Release not found at $1/$release_yml"
-		exit 1
-	fi
-	
+    release_yml=releases/$2
+    
+    if [[ -e "$1/$release_yml" ]]
+    then
+        pushd $1 &>/dev/null
+        echo $(cat $release_yml | grep "commit_hash:" | sed "s/ //g" |  sed "s/'//g" | cut -d ':' -f 2 )
+        popd &>/dev/null
+    else
+        echo "ERROR: Release not found at $1/$release_yml"
+        exit 1
+    fi
+    
 }
 
 upload_release(){
 
-	if is_release_in_director $(get_commit_hash  $1 $2)
-	then
-		echo "INFO: Release already found in Bosh director"
-	else
-		pushd $1 &>/dev/null
-		bosh upload release releases/$2
-		popd &>/dev/null
-	fi
-	
+    if is_release_in_director $(get_commit_hash  $1 $2)
+    then
+        echo "INFO: Release already found in Bosh director"
+    else
+        pushd $1 &>/dev/null
+        bosh upload release releases/$2
+        popd &>/dev/null
+    fi
+    
 }
 
 upload_cf_releases(){
-	upload_release $CFDIR "cf-${CF_VERSION}.yml"
-	upload_release $DIEGODIR "diego-${DIEGO_VERSION}.yml"
-	upload_release $GARDENDIR "garden-linux/garden-linux-${GARDEN_LINUX_VERSION}.yml"
+    upload_release $CFDIR "cf-${CF_VERSION}.yml"
+    upload_release $DIEGODIR "diego-${DIEGO_VERSION}.yml"
+    upload_release $GARDENDIR "garden-linux/garden-linux-${GARDEN_LINUX_VERSION}.yml"
 }
 
 # Login bosh
@@ -134,7 +134,7 @@ if [[ ! -n "$CF_VERSION" ]]
 then
     CURRENT_CF_VERSION=$(get.latest.major.release $CFDIR)
     pushd $CFDIR
-    git pull origin master
+    git pull
     CF_VERSION=$(get.latest.major.release $CFDIR)
     popd
     if [[ "$CURRENT_CF_VERSION" == "$CF_VERSION" ]]
@@ -154,21 +154,21 @@ fi
 
 if [[ ! $NO_UPLOAD ]]
 then
-	upload_cf_releases
+    upload_cf_releases
 fi
 
 # Check if stemcell is there.
 
 if is_stemcell_missing $STEMCELL 
 then
-	curl -L -J -O https://bosh.io/d/stemcells/$STEMCELL
-	bosh upload stemcell $STEMCELL 
+    curl -L -J -O https://bosh.io/d/stemcells/$STEMCELL
+    bosh upload stemcell $STEMCELL 
 fi
 
 if [[ "$(bosh deployments)" != *"No deployments"* ]] && [[ ! -f "manifests/cf.yml" ]] && [[ ! -f "manifests/diego.yml" ]]
 then
-	bosh -d manifests/cf.yml cloudcheck
-	bosh -d manifests/diego.yml  cloudcheck
+    bosh -d manifests/cf.yml cloudcheck
+    bosh -d manifests/diego.yml  cloudcheck
 fi
 
 # Generate manifests
@@ -178,7 +178,7 @@ mkdir -p manifests
 if [[ ! -f "manifests/cf.yml" ]] || [[ ! -f "manifests/diego.yml" ]] || [[ $NEW_RELEASE ]]
 then
     update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR -f
-	generate.devbox.manifests -d $DIEGO_VERSION -c v$CF_VERSION -o manifests --cfdir $CFDIR --diegodir $DIEGODIR --lite 
+    generate.devbox.manifests -d $DIEGO_VERSION -c v$CF_VERSION -o manifests --cfdir $CFDIR --diegodir $DIEGODIR --lite 
 fi
 
 # Deploy manifests
@@ -195,7 +195,7 @@ bosh cloudcheck
 
 if [[ $CLEANUP ]]
 then 
-	bosh cleanup --all 
+    bosh cleanup --all 
 fi
 
 
