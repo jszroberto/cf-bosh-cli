@@ -1,6 +1,5 @@
 #! /bin/bash
 
-
 if [[ ! -d "$GOPATH/src/github.com/cloudfoundry-incubator/diego-acceptance-tests" ]]
 then
 	echo "ERROR: DATs are not installed"
@@ -37,6 +36,7 @@ fi
 
 if [[ "$#" == 0 ]]
 then
+	/root/bin/checkout.acceptance.tests --dats
 	$(pwd)/bin/test
 else 
 	$(pwd)/bin/test $*
