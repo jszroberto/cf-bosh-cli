@@ -4,6 +4,7 @@ MAINTAINER Roberto Jimenez Sanchez, <jszroberto@gmail.com>
 # Installation of Diego Beta Plugin
 
 RUN cf install-plugin Diego-Beta -r CF-Community
+RUN git clone https://github.com/cloudfoundry-incubator/diego-ssh.git && go build diego-ssh/cf-plugin && cf install-plugin cf-plugin && rm -r diego-ssh cf-plugin
 
 # Downloading repositories
 
