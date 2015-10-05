@@ -55,7 +55,8 @@ case $key in
     shift
     ;;
     -o)
-    manifests=$(readlink -m $1)
+    # manifests=$(readlink -e $1)
+    manifests=$1
     shift
     ;;
     --lite)

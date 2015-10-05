@@ -17,6 +17,8 @@ OPTIONS:
    --gardendir  Location of the Garden-linux repository 
    --diegodir   Location of the Diego repository
    -s           update Diego and CF repositories without changing the HEAD.
+   --pull       Only pull github repositories
+   --only       Only updates the specified release. Options: cf, diego and garden-linux
    -f           Force updates
    -h --help    Show the usage
 EOF
@@ -46,8 +48,15 @@ case $key in
     GARDENDIR=$1
     shift
     ;;
+    --only)
+    ONLY=$1
+    shift
+    ;;
     -s)
     SILENCE=1
+    ;;
+    --pull)
+    PULL=1
     ;;
     -f)
     FORCE=1
@@ -97,12 +106,18 @@ push_pop_repo(){
 
 update_cf(){
     git pull
-    ./scripts/update
+    if [[ ! $PULL ]]
+    then 
+        ./scripts/update
+    fi
 }
 
 update_diego(){
     git pull 
-    ./scripts/update
+    if [[ ! $PULL ]]
+    then 
+        ./scripts/update
+    fi
 }
 
 update_garden(){
@@ -111,6 +126,26 @@ update_garden(){
     # git pull origin develop
 }
 
-push_pop_repo $CFDIR master update_cf
-push_pop_repo $DIEGODIR master update_diego
-push_pop_repo $GARDENDIR master update_garden
+if [[ -n "$ONLY" ]]
+then  
+    case "$ONLY" in
+        cf)
+            push_pop_repo $CFDIR master update_cf
+            ;;
+         
+        diego)
+            push_pop_repo $DIEGODIR master update_diego
+            ;;
+         
+        garden-linux)
+            push_pop_repo $GARDENDIR master update_garden
+            ;;
+        *)
+            echo "ERROR: Release $ONLY not found. Options: diego, cf and garden-linux"
+            exit 1
+    esac
+else
+    push_pop_repo $CFDIR master update_cf
+    push_pop_repo $DIEGODIR master update_diego
+    push_pop_repo $GARDENDIR master update_garden
+fi

@@ -6,4 +6,4 @@ RUN wget http://tools.ietf.org/tools/rfcdiff/rfcdiff-1.42.tgz && tar -xzf rfcdif
 
 ADD bin/* /root/bin/
 RUN chmod +x /root/bin/*
-ENTRYPOINT bash -l -c "load.env bash"
+ENTRYPOINT bash -l -c "load.env run_ctl"

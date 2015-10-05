@@ -165,7 +165,7 @@ then
     bosh upload stemcell $STEMCELL 
 fi
 
-if [[ "$(bosh deployments)" != *"No deployments"* ]] && [[ ! -f "manifests/cf.yml" ]] && [[ ! -f "manifests/diego.yml" ]]
+if [[ "$(bosh deployments)" != *"No deployments"* ]] && [[ -f "manifests/cf.yml" ]] && [[ -f "manifests/diego.yml" ]]
 then
     bosh -d manifests/cf.yml cloudcheck
     bosh -d manifests/diego.yml  cloudcheck
@@ -175,7 +175,7 @@ fi
 
 mkdir -p manifests
 
-if [[ ! -f "manifests/cf.yml" ]] || [[ ! -f "manifests/diego.yml" ]] || [[ $NEW_RELEASE ]]
+if [[ ! -f "manifests/cf.yml" ]] || [[ ! -f "manifests/diego.yml" ]] 
 then
     update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR -f
     generate.devbox.manifests -d $DIEGO_VERSION -c v$CF_VERSION -o manifests --cfdir $CFDIR --diegodir $DIEGODIR --lite 
