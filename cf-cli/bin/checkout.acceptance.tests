@@ -50,7 +50,7 @@ case $key in
 esac
 done
 
-release_hash=$(./get.current.release.info -r $release | head -n 1)
+release_hash=$(/root/bin/get.current.release.info -r $release | head -n 1)
 cd $dir 
 git checkout develop
 git checkout $release_hash
