@@ -4,7 +4,7 @@ dir=""
 release=""
 tests=""
 test_dir=""
-update_command=""
+update_command="./scripts/update"
 usage() {
         echo "The script checks out the matching CATS/DATS commit"
         echo
@@ -32,7 +32,6 @@ case $key in
 		release="diego"
 		tests="diego-acceptance-tests"
 		test_dir=$(echo $DATSDIR)
-		update_command="./scripts/update"
         shift
         ;;
 --cats)
@@ -40,7 +39,6 @@ case $key in
 		release="cf"
 		tests="cf-acceptance-tests"
 		test_dir=$(echo $CATSDIR)
-		update_command="./update"
 		shift
 		;;
         *)
