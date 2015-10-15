@@ -4,6 +4,7 @@ dir=""
 release=""
 tests=""
 test_dir=""
+update_command="./scripts/update"
 usage() {
         echo "The script checks out the matching CATS/DATS commit"
         echo
@@ -11,9 +12,6 @@ usage() {
         echo
         echo "OPTION - <--dats> or <--cats>" 
         echo "Example: $0 --dats" 
-
-
-
 }
 if [ $# -lt 1 ]; then
     usage
@@ -50,11 +48,11 @@ case $key in
 esac
 done
 
-release_hash=$(./get.current.release.info -r $release | head -n 1)
+release_hash=$(/root/bin/get.current.release.info -r $release | head -n 1)
 cd $dir 
 git checkout develop
 git checkout $release_hash
-./scripts/update
+$update_command
 commit=$(git submodule | grep $tests | awk -F " " '{print $1}')
 cd $test_dir
 git checkout $commit
