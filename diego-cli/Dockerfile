@@ -10,9 +10,11 @@ RUN cf install-plugin https://github.com/cloudfoundry-incubator/diego-ssh/releas
 
 ENV DIEGODIR /root/diego-release
 ENV GARDENDIR /root/garden-linux-release
+ENV ETCDDIR /root/etcd-release
 
 RUN git clone https://github.com/cloudfoundry-incubator/diego-release.git /root/diego-release
 RUN git clone https://github.com/cloudfoundry-incubator/garden-linux-release.git /root/garden-linux-release
+RUN git clone https://github.com/cloudfoundry-incubator/etcd-release.git /root/etcd-release
 
 
 
