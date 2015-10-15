@@ -1,0 +1,29 @@
+#!/bin/bash
+
+detect_new_cf_major_release(){
+	get.latest.major.version $CFDIR
+	oldversion=$cf_version
+	update.cf.repositories --cfdir $CFDIR &>/dev/null
+	get.latest.major.version $CFDIR
+	newversion=$cf_version
+	if [[ "$oldversion" != "$newversion" ]]
+	then
+		if [[ ! -f "$TRIGGER" ]]
+		then 
+			echo "ERROR: File $TRIGGER not found"
+			exit 1
+		else
+			sudo chmod +x $TRIGGER
+			$TRIGGER $newversion
+		fi
+	fi
+}
+
+if [[ ! -n "$TRIGGER" ]]
+then 
+	echo "Usage: $0 TRIGGER "
+	exit 1
+else 
+	TRIGGER=$1
+	detect_new_cf_major_release
+fi

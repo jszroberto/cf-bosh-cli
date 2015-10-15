@@ -1,0 +1,2 @@
+cp $TRIGGER /root/bin/
+detect.cf.major.release $TRIGGER >> /workspace/trigger.log 2>&1
