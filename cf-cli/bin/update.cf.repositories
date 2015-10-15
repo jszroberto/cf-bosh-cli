@@ -16,6 +16,7 @@ OPTIONS:
    --cfdir      Location of the CF repository
    --gardendir  Location of the Garden-linux repository 
    --diegodir   Location of the Diego repository
+   --etcddir    Location of the ETCD repository
    -s           update Diego and CF repositories without changing the HEAD.
    --pull       Only pull github repositories
    --only       Only updates the specified release. Options: cf, diego and garden-linux
@@ -126,6 +127,11 @@ update_garden(){
     git pull --recurse-submodules
     # git pull origin develop
 }
+update_etcd(){
+    git pull 
+    git pull --recurse-submodules
+    # git pull origin develop
+}
 
 if [[ -n "$ONLY" ]]
 then  
@@ -149,4 +155,5 @@ else
     push_pop_repo $CFDIR master update_cf
     push_pop_repo $DIEGODIR master update_diego
     push_pop_repo $GARDENDIR master update_garden
+    push_pop_repo $ETCDDIR master update_etcd
 fi
