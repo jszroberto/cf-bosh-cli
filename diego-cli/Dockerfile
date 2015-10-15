@@ -17,7 +17,6 @@ RUN git clone https://github.com/cloudfoundry-incubator/garden-linux-release.git
 RUN git clone https://github.com/cloudfoundry-incubator/etcd-release.git /root/etcd-release
 
 
-
 RUN mkdir -p /var/lib/consul && mkdir -p /usr/share/consul && mkdir -p /etc/consul/conf.d
 RUN curl -O -J -L https://dl.bintray.com/mitchellh/consul/0.5.2_linux_amd64.zip && unzip 0.5.2_linux_amd64.zip && mv consul /usr/local/bin/consul
 RUN curl -O -J -L https://dl.bintray.com/mitchellh/consul/0.5.2_web_ui.zip && unzip 0.5.2_web_ui.zip && mv dist /usr/share/consul/ui

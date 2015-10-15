@@ -157,6 +157,7 @@ then
     row=$(get.cf.compatible.versions $CF_VERSION)
     DIEGO_VERSION=$(echo $row | cut -d "," -f2)
     GARDEN_LINUX_VERSION=$(echo $row | cut -d "," -f3)
+    ETCD_VERSION=$(echo $row | cut -d "," -f4)
 fi
 
 # Upload releases
