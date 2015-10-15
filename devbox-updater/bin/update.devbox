@@ -21,6 +21,7 @@ OPTIONS:
    --cfdir      Location of the CF repository
    --diegodir   Location of the Diego repository
    --gardendir  Location of the Garden-Linux repository
+   --etcddir    Location of the ETCD repository
    --no-upload  No realeses will be upload into director
    --stemcell   Stemcell used
    --cleanup    Unused stemcells and release will be removed after update
@@ -135,7 +136,7 @@ login.bosh
 
 # Update repositories
 
-update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR
+update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR --pull
 
 # Get releases version
 
