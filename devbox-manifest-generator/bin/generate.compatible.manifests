@@ -17,4 +17,3 @@ fi
 
 update.cf.repositories -f
 generate.devbox.manifests -d $DIEGO_VERSION -c v$CF_VERSION -o manifests --lite
-

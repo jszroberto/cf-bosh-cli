@@ -80,22 +80,23 @@ fi
 
 
 push_pop_repo(){
-    echo "INFO: UPDATING REPO $repository "
+    
     repository=$1
     branch=$2
+    echo "INFO: UPDATING REPO $repository "
     if [[ -n "$repository" ]]; then
         pushd $repository
-        if [[ SILENCE ]]
+        if [[ $SILENCE ]]
         then 
             previous_hash=$(git rev-parse HEAD) 
         fi
         git checkout $branch
-        if [[ $(git rev-parse HEAD) != $(git rev-parse @{u}) ]] || [[ -n $FORCE ]]
-        then
-            $3
-        fi
+        # if [[ $(git rev-parse HEAD) != $(git rev-parse @{u}) ]] || [[ -n $FORCE ]]
+        # then
+        $3
+        # fi
 
-        if [[ SILENCE ]]
+        if [[ $SILENCE ]]
         then 
             git checkout $previous_hash
         fi 
@@ -105,14 +106,6 @@ push_pop_repo(){
 }
 
 update_cf(){
-    git pull
-    if [[ ! $PULL ]]
-    then 
-        ./scripts/update
-    fi
-}
-
-update_diego(){
     git pull 
     if [[ ! $PULL ]]
     then 
@@ -120,8 +113,16 @@ update_diego(){
     fi
 }
 
-update_garden(){
+update_diego(){
     git pull
+    if [[ ! $PULL ]]
+    then 
+        ./scripts/update
+    fi
+}
+
+update_garden(){
+    git pull 
     git pull --recurse-submodules
     # git pull origin develop
 }

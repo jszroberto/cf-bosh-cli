@@ -56,7 +56,7 @@ case $key in
     ;;
     -o)
     # manifests=$(readlink -e $1)
-    manifests=$1
+    MANIFESTS_DIR=$1
     shift
     ;;
     --lite)
@@ -74,71 +74,41 @@ esac
 done
 
 
-if [[ "$CF_VERSION" == "" ]] || [[ "$DIEGO_VERSION" == "" ]] || [[ "$CFDIR" == "" ]] || [[ "$DIEGODIR" == "" ]] || [[ "$manifests" == "" ]]; then
+if [[ "$CF_VERSION" == "" ]] || [[ "$DIEGO_VERSION" == "" ]] || [[ "$CFDIR" == "" ]] || [[ "$DIEGODIR" == "" ]] || [[ "$MANIFESTS_DIR" == "" ]]; then
     usage
     exit 1
 fi
 
+
 generate_devbox_manifests(){
 
-
-mkdir -p ${manifests}/tmp
-
-if [[ $LITE ]]
-then 
-	$DIEGODIR/scripts/print-director-stub > ${manifests}/tmp/director.yml
-else 
-	echo "director_uuid: 4796378f-cc91-4d93-a1b0-75a9af101708" > ${manifests}/tmp/director.yml
-fi
+# if [[ $LITE ]]
+# then 
+# 	$DIEGODIR/scripts/print-director-stub > ${MANIFESTS_DIR}/tmp/director.yml
+# else 
+# 	echo "director_uuid: 4796378f-cc91-4d93-a1b0-75a9af101708" > ${MANIFESTS_DIR}/tmp/director.yml
+# fi
 
 pushd $DIEGODIR
-# local diego_previous_hash=$(git rev-parse HEAD)
-git pull origin develop
+local diego_previous_hash=$(git rev-parse HEAD)
+git pull origin master
 git checkout $DIEGO_VERSION
 
 pushd $CFDIR
-
-# local cf_previous_hash=$(git rev-parse HEAD)
-
-git pull origin develop
+local cf_previous_hash=$(git rev-parse HEAD)
+git pull origin master
 git checkout $CF_VERSION
+popd
 
-# ${DIEGODIR}/stubs-for-cf-release/enable_diego_ssh_in_cf.yml \
-enable_diego_ssh_stub="${DIEGODIR}/stubs-for-cf-release/enable_diego_ssh_in_cf.yml"
-if [[ ! -f "$enable_diego_ssh_stub" ]]
-then 
-    enable_diego_ssh_stub="${DIEGODIR}/stubs-for-cf-release/enable_diego_ssh_in_cc.yml"
-fi
+./scripts/generate-bosh-lite-manifests
 
-generation_script="./scripts/generate_deployment_manifest"
-if [[ ! -f "$generation_script" ]]
-then
-    generation_script="./generate_deployment_manifest"
-fi
+pushd $CFDIR
+git checkout $cf_previous_hash
+popd
+git checkout $diego_previous_hash
+popd
 
-$generation_script warden \
-    ${manifests}/tmp/director.yml \
-    ${DIEGODIR}/stubs-for-cf-release/enable_consul_with_cf.yml \
-    $enable_diego_ssh_stub \
-    > ${manifests}/tmp/cf.yml
-
-cp ${manifests}/tmp/cf.yml ${manifests}/cf.yml
-
-# git checkout $cf_previous_hash
-popd 
-
-./scripts/generate-deployment-manifest \
-    ${manifests}/tmp/director.yml \
-    manifest-generation/bosh-lite-stubs/property-overrides.yml \
-    manifest-generation/bosh-lite-stubs/instance-count-overrides.yml \
-    manifest-generation/bosh-lite-stubs/persistent-disk-overrides.yml \
-    manifest-generation/bosh-lite-stubs/iaas-settings.yml \
-    manifest-generation/bosh-lite-stubs/additional-jobs.yml \
-    ${manifests}/tmp \
-    > ${manifests}/tmp/diego.yml
-cp ${manifests}/tmp/diego.yml ${manifests}/diego.yml
-# git checkout $diego_previous_hash
-popd 
+cp $DIEGODIR/bosh-lite-manifests/* $MANIFESTS_DIR/
 
 }
 

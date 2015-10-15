@@ -128,6 +128,10 @@ upload_cf_releases(){
 
 login.bosh
 
+# Update repositories
+
+update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR
+
 # Get releases version
 
 if [[ ! -n "$CF_VERSION" ]]
@@ -177,7 +181,7 @@ mkdir -p manifests
 
 if [[ ! -f "manifests/cf.yml" ]] || [[ ! -f "manifests/diego.yml" ]] 
 then
-    update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR -f
+    # update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR -f
     generate.devbox.manifests -d $DIEGO_VERSION -c v$CF_VERSION -o manifests --cfdir $CFDIR --diegodir $DIEGODIR --lite 
 fi
 
