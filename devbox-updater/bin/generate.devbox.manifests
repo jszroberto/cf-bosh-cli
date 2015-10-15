@@ -98,6 +98,7 @@ pushd $CFDIR
 local cf_previous_hash=$(git rev-parse HEAD)
 git pull origin master
 git checkout $CF_VERSION
+./scripts/generate-bosh-lite-dev-manifest
 popd
 
 ./scripts/generate-bosh-lite-manifests
@@ -108,7 +109,8 @@ popd
 git checkout $diego_previous_hash
 popd
 
-cp $DIEGODIR/bosh-lite-manifests/* $MANIFESTS_DIR/
+cp $DIEGODIR/bosh-lite/deployments/diego.yml $MANIFESTS_DIR/
+cp $CFDIR/bosh-lite/deployments/cf.yml $MANIFESTS_DIR/
 
 }
 
