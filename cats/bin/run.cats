@@ -37,7 +37,9 @@ fi
 
 if [[ "$#" == 0 ]]
 then
-	/root/bin/checkout.acceptance.tests --cats
+	if [[ $DETECT ]]; then
+		/root/bin/checkout.acceptance.tests --cats
+	fi 
 	$(pwd)/bin/test_default
 else 
 	$(pwd)/bin/test $*

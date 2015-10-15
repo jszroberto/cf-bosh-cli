@@ -36,7 +36,9 @@ fi
 
 if [[ "$#" == 0 ]]
 then
-	/root/bin/checkout.acceptance.tests --dats
+	if [[ $DETECT ]]; then
+		/root/bin/checkout.acceptance.tests --dats
+    fi
 	$(pwd)/bin/test
 else 
 	$(pwd)/bin/test $*
