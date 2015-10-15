@@ -91,17 +91,20 @@ generate_devbox_manifests(){
 
 pushd $DIEGODIR
 local diego_previous_hash=$(git rev-parse HEAD)
-git pull origin master
+git pull 
 git checkout $DIEGO_VERSION
 
 pushd $CFDIR
 local cf_previous_hash=$(git rev-parse HEAD)
-git pull origin master
+git pull 
 git checkout $CF_VERSION
 ./scripts/generate-bosh-lite-dev-manifest
 popd
 
 ./scripts/generate-bosh-lite-manifests
+
+cp $DIEGODIR/bosh-lite/deployments/diego.yml $MANIFESTS_DIR/
+cp $CFDIR/bosh-lite/deployments/cf.yml $MANIFESTS_DIR/
 
 pushd $CFDIR
 git checkout $cf_previous_hash
@@ -109,8 +112,7 @@ popd
 git checkout $diego_previous_hash
 popd
 
-cp $DIEGODIR/bosh-lite/deployments/diego.yml $MANIFESTS_DIR/
-cp $CFDIR/bosh-lite/deployments/cf.yml $MANIFESTS_DIR/
+
 
 }
 
