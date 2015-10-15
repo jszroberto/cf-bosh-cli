@@ -26,7 +26,7 @@ then
   "api": "api.bosh-lite.com",
   "admin_user": "admin",
   "admin_password": "admin",
-  "apps_domain": "10.244.0.34.xip.io",
+  "apps_domain": "bosh-lite.com",
   "skip_ssl_validation": true,
   "secure_address": "10.244.0.42:4001"
 }
