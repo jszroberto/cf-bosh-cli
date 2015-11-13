@@ -91,13 +91,12 @@ generate_devbox_manifests(){
 
 pushd $DIEGODIR
 local diego_previous_hash=$(git rev-parse HEAD)
-git pull 
 git checkout $DIEGO_VERSION
 
 pushd $CFDIR
 local cf_previous_hash=$(git rev-parse HEAD)
-git pull 
 git checkout $CF_VERSION
+
 ./scripts/generate-bosh-lite-dev-manifest
 popd
 

@@ -111,11 +111,11 @@ fi
 manifests=${OUTPUT}/manifests
 diffs=${OUTPUT}/diffs
 
-generate.devbox.manifests -d $NEWDIEGO -c v$NEWCF -o $manifests --cfdir $CFDIR --diegodir $DIEGODIR -o $manifests
+generate.devbox.manifests -d v$NEWDIEGO -c v$NEWCF -o $manifests --cfdir $CFDIR --diegodir $DIEGODIR -o $manifests
 mv $manifests/diego.yml "${manifests}/boshlite-diego-${NEWDIEGO}-for-cf-${NEWCF}.yml"
 mv $manifests/cf.yml ${manifests}/boshlite-cf-${NEWCF}.yml
 
-generate.devbox.manifests -d $OLDDIEGO -c v$OLDCF -o $manifests --cfdir $CFDIR --diegodir $DIEGODIR -o $manifests
+generate.devbox.manifests -d v$OLDDIEGO -c v$OLDCF -o $manifests --cfdir $CFDIR --diegodir $DIEGODIR -o $manifests
 mv $manifests/diego.yml "${manifests}/boshlite-diego-${OLDDIEGO}-for-cf-${OLDCF}.yml"
 mv $manifests/cf.yml ${manifests}/boshlite-cf-${OLDCF}.yml
 
