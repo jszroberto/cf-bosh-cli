@@ -37,8 +37,10 @@ case $key in
 esac
 done
 
+table=compatibility.csv
+
 get_row(){
-	row="$(cat compatibility.csv | grep "^${1}" | sort | head -n 1)"
+	row="$(cat $table | grep ${1} | sort -r | head -n 1)"
 	if [[ -n "$row" ]]
 	then
 		echo $row
@@ -55,35 +57,18 @@ get_cf_compatible_versions(){
 		exit 1
 	fi
 
-	if [[ ! -f compatibility.csv ]] || [[ FORCE ]]
+	generate.compatibility.table > $table
+	release_hash=$(cat $CFDIR/releases/cf-$1.yml | grep commit_hash | sed "s/ //g" |  sed "s/'//g" | cut -d ':' -f 2 )
+	row=$(get_row $release_hash)
+	if [[ -n "$row" ]]
 	then
-		generate.compatibility.table > compatibility.csv
-		row=$(get_row $1)
-		if [[ -n "$row" ]]
-		then
-			echo $row
-		else
-			echo "ERROR: Compatible versions for CF $1 not found" 1>&2
-			exit 1
-		fi
+		echo $row
+		exit 0
 	else
-		row=$(get_row $1)
-		if [[ -n "$row" ]]
-		then
-			echo $row
-			exit 0
-		else
-			generate.compatibility.table > compatibility.csv
-			row=$(get_row $1)
-			if [[ -n "$row" ]]
-			then
-				echo $row
-			else
-				echo "ERROR: Compatible versions for CF $1 not found" 1>&2
-				exit 1
-			fi
-		fi 
-	fi
+		echo "ERROR: Compatible versions for CF $1 not found" 1>&2
+		exit 1
+	fi 
+	
 }
 
 get_cf_compatible_versions $args
