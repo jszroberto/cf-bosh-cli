@@ -188,8 +188,8 @@ mkdir -p manifests
 
 if [[ ! -f "manifests/cf.yml" ]] || [[ ! -f "manifests/diego.yml" ]] 
 then
-    # update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR -f
-    generate.devbox.manifests -d v$DIEGO_VERSION -c v$CF_VERSION -o manifests --cfdir $CFDIR --diegodir $DIEGODIR -f 
+    update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR -f
+    generate.devbox.manifests -d v$DIEGO_VERSION -c v$CF_VERSION -o manifests --cfdir $CFDIR --diegodir $DIEGODIR
 fi
 
 # Deploy manifests
