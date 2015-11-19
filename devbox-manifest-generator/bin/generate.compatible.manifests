@@ -1,6 +1,5 @@
 #!/bin/bash
 
-update.cf.repositories --cfdir $CFDIR --diegodir $DIEGODIR --gardendir $GARDENDIR
 
 if [[ -n "$1" ]]
 then

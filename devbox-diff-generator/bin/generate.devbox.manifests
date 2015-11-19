@@ -55,7 +55,7 @@ case $key in
     shift
     ;;
     -o)
-    # manifests=$(readlink -e $1)
+    # MANIFESTS=$(readlink -e $1)
     MANIFESTS_DIR=$1
     shift
     ;;
@@ -102,15 +102,14 @@ popd
 
 ./scripts/generate-bosh-lite-manifests
 
+pushd $CFDIR
+# git checkout $cf_previous_hash
+popd
+# git checkout $diego_previous_hash
+popd
+
 cp $DIEGODIR/bosh-lite/deployments/diego.yml $MANIFESTS_DIR/
 cp $CFDIR/bosh-lite/deployments/cf.yml $MANIFESTS_DIR/
-
-pushd $CFDIR
-git checkout $cf_previous_hash
-popd
-git checkout $diego_previous_hash
-popd
-
 
 
 }
