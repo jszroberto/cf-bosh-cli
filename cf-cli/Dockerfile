@@ -11,7 +11,9 @@ RUN wget 'https://cli.run.pivotal.io/stable?release=linux64-binary&source=github
 
 # Installation of GO
 
-RUN apt-get update && apt-get install golang -y
+RUN wget https://storage.googleapis.com/golang/go1.5.3.linux-amd64.tar.gz -P /tmp
+RUN tar -C /usr/local -xvf /tmp/go1.5.3.linux-amd64.tar.gz
+RUN ln /usr/local/go/bin/go /usr/bin/go
 
 ENV GOPATH /root/go 
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
